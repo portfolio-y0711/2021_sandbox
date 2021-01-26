@@ -1,19 +1,19 @@
-const { LOG } = require('./util')
+const { LOG } = require('./util');
 
 module.exports = (document, mediator) => new (class {
-    todoList
+    todoList;
     constructor() {
-        this.todoList = document.getElementById('todo-list')
+        this.todoList = document.getElementById('todo-list');
     }
     updateDisplay(items) {
-        LOG('[out] updateDisplay')
+        LOG('[out] updateDisplay');
         while(this.todoList.firstChild) {
-           this.todoList.removeChild(this.todoList.firstChild) 
+           this.todoList.removeChild(this.todoList.firstChild);
         }
         items
             .map(item => createListItem(document, mediator, item))
             .forEach(listItem => {
-                this.todoList.append(listItem)
+                this.todoList.append(listItem);
             })
     }
 })

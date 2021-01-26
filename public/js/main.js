@@ -1,8 +1,8 @@
-require('../stylesheets/style.css')
+require('../stylesheets/style.css');
 
-const input = require('./input')
-const output = require('./output')
-const store = require('./store')
+const input = require('./input');
+const output = require('./output');
+const store = require('./store');
 
 require('./mediator') (
     document,

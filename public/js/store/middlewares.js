@@ -3,7 +3,7 @@ const logMiddleware = (logger) => (store) =>
         (action) => {
             logger(`[log] action type: ${action.type}`)
             next(action)
-        }
+        };
 
 const asyncMiddleware = (injection) => (store) => 
     (next) => 
@@ -20,7 +20,7 @@ const asyncMiddleware = (injection) => (store) =>
                 dispatch(newAction)
             })
             next(action)
-        }
+        };
 
 const middlewares = [
     logMiddleware(require('../util').LOG), 

@@ -1,25 +1,25 @@
 const { LOG } = require('../../util')
 
 module.exports = (reducer) => {
-    state = undefined
-    listeners = []
+    state = undefined;
+    listeners = [];
 
     function getState() {
-        return state
+        return state;
     }
 
     function dispatch(action) {
-        state = reducer(state, action)
+        state = reducer(state, action);
         listeners.forEach((callback) => {
-            callback()
-        })
-        return action
+            callback();
+        });
+        return action;
     }
 
     function subscribe(listener) {
-        listeners.push(listener)
+        listeners.push(listener);
         return () => {
-            listeners.splice(listeners.indexOf(listener), 1)
+            listeners.splice(listeners.indexOf(listener), 1);
         }
     }
 
@@ -29,7 +29,7 @@ module.exports = (reducer) => {
         dispatch: dispatch,
         state: state,
         listeners: listeners,
-    })
+    });
 }
 
 
