@@ -1,0 +1,32 @@
+{
+  "name": "pouchdb-trial",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "jest": "^26.6.3",
+    "jquery": "^3.5.1",
+    "pouchdb": "^7.2.2"
+  },
+  "devDependencies": {
+    "browserify": "^17.0.0",
+    "concurrently": "^5.3.0",
+    "css-loader": "^5.0.1",
+    "cypress": "^6.3.0",
+    "devtools-detect": "^3.0.1",
+    "eslint": "^7.18.0",
+    "json-server": "^0.16.3",
+    "pug-cli": "^1.0.0-alpha6",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.17.0",
+    "webpack-cli": "^4.4.0"
+  },
+  "scripts": {
+    "build": "npx pug-cli -P ./public/index.pug && browserify ./public/js/main.js -o ./dist/bundle.js",
+    "dev": "nodemon --watch ./public/js/ --watch ./public/index.pug -x 'npm run build'",
+    "test": "jest --watchAll"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

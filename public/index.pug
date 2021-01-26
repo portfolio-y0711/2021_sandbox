@@ -1,0 +1,22 @@
+doctype html
+html(lang='pl')
+  head
+    meta(charset='utf-8')
+    title Todo List
+    link(rel='stylesheet' href='./stylesheets/style.css')
+
+  body
+    header#main-header.main-header
+      h1 Todo List
+
+    form#todo-form.todo-form
+      label(for='todo-date') Date
+      input#todo-date(type='date' name='date')
+      label(for='todo-title') Todo Title
+      input#todo-title(type='text' name='name')
+      input#add-button(type='button' name='add-button' value='Add')
+
+    ul#todo-list.todo-list
+
+    script(src='../node_modules/devtools-detect/index.js')
+    script(src='../dist/bundle.js')
