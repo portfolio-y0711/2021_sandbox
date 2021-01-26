@@ -9,6 +9,10 @@
     "pouchdb": "^7.2.2"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
+    "@babel/preset-env": "^7.12.11",
+    "babel-loader": "^8.2.2",
     "browserify": "^17.0.0",
     "concurrently": "^5.3.0",
     "css-loader": "^5.0.1",
@@ -17,14 +21,16 @@
     "eslint": "^7.18.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
+    "html-webpack-plugin": "^4.5.1",
     "json-server": "^0.16.3",
     "pug-cli": "^1.0.0-alpha6",
     "style-loader": "^2.0.0",
     "webpack": "^5.17.0",
-    "webpack-cli": "^4.4.0"
+    "webpack-cli": "^4.4.0",
+    "webpack-dev-server": "^3.11.2"
   },
   "scripts": {
-    "build": "npx pug-cli -P ./public/index.pug && browserify ./public/js/main.js -o ./dist/bundle.js",
+    "build": "npx pug-cli -P ./src/html/index.pug -o ./src/html && browserify ./src/js/main.js -o ./dist/bundle.js",
     "dev": "nodemon --watch ./public/js/ --watch ./public/index.pug -x 'npm run build'",
     "test": "jest --watchAll"
   },

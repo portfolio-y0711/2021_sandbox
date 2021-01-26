@@ -2,8 +2,8 @@ doctype html
 html(lang='pl')
   head
     meta(charset='utf-8')
-    title Todo List
-    link(rel='stylesheet' href='./stylesheets/style.css')
+    title <%= htmlWebpackPlugin.options.title %>
+    link(rel='stylesheet' href='./style.css')
 
   body
     header#main-header.main-header
