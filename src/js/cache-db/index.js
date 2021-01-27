@@ -1,5 +1,6 @@
 const PouchDB = require('pouchdb');
 PouchDB.plugin(require('pouchdb-adapter-memory'));
+PouchDB.plugin(require('pouchdb-find'));
 
 module.exports = (() => {
     let conn;
@@ -22,28 +23,30 @@ module.exports = (() => {
             });
         }
         async readItem(docId) {
-            const doc = await conn.get(docId);
+            const doc = (await conn.find({
+                selector: { id: docId },
+                // sort: ['name']
+            })).docs[0]
             delete doc._id;
             delete doc._rev;
             return doc;
         }
         async readAllItems() {
             const res = conn.allDocs({include_docs: true});
-            const items = {};
-            (await res).rows.forEach(n => items[n.id] = n.doc);
-            return items
+            return (await res).rows.map(n => {
+                const doc = n.doc;
+                delete doc._id;
+                delete doc._rev;
+                return doc;
+            });
+        }
+        async deleteItem(docId) {
+            const doc_Id = (await conn.find({
+                selector: { id: docId },
+            })).docs[0]._id;
+            return conn.get(doc_Id).then(function(doc){
+                conn.remove(doc)
+            });
         }
     }) ();
 })()
-
-// ;(async()=>{
-//     var firstSingleton = db.getConnection();
-//     var secondSingleton = db.getConnection();
-//     await db.resetDB();
-//     var thirdSingleton = db.getConnection();
-//     var fourthSingleton = db.getConnection();
-
-//     console.log(firstSingleton === secondSingleton); // true
-//     console.log(secondSingleton === thirdSingleton); // true
-//     console.log(fourthSingleton === thirdSingleton); // true
-// })()

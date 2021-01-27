@@ -1,11 +1,10 @@
-
 describe('Cache DB', () => {
     let cacheDB;
 
     beforeAll(() => {
         cacheDB = require('./index')
     })
-    afterEach(async() => {
+    afterEach(async () => {
         await cacheDB.resetDB();
     })
 
@@ -14,10 +13,12 @@ describe('Cache DB', () => {
             id: 'C#4F',
             name: 'this is for testing couchdb',
             createdAt: new Date().toString(),
-            updatedAt: new Date().toString(),
+            updatedAt: new Date().toString()
         };
-        const created = await cacheDB.createItem({ ...expected });
-        const actual = await cacheDB.readItem(created.id);
+        await cacheDB.createItem({
+            ... expected
+        });
+        const actual = await cacheDB.readItem(expected.id);
         expect(actual).toEqual(expected);
     })
 
@@ -27,17 +28,39 @@ describe('Cache DB', () => {
                 id: 'R34K',
                 name: 'this is for testing couchdb',
                 createdAt: new Date().toString(),
-                updatedAt: new Date().toString(),
-            },
-            {
+                updatedAt: new Date().toString()
+            }, {
                 id: '324G',
                 name: 'this is for testing couchdb',
                 createdAt: new Date().toString(),
-                updatedAt: new Date().toString(),
+                updatedAt: new Date().toString()
             },
         ];
         expected.forEach(cacheDB.createItem);
-        const res = await cacheDB.readAllItems()
-        console.log(res);
+        const expectedIds = expected.map(e => e.id);
+        const actual = (await cacheDB.readAllItems()).map(doc => doc.id);
+        expect(actual).toEqual(expectedIds);
     })
+
+    it('delete a item', async () => {
+        let expected = [
+            {
+                id: '58R@',
+                name: 'this is for testing couchdb delete',
+                createdAt: new Date().toString(),
+                updatedAt: new Date().toString()
+            }, 
+            {
+                id: '37!4',
+                name: 'this is for testing couchdb delete',
+                createdAt: new Date().toString(),
+                updatedAt: new Date().toString()
+            },
+        ];
+        expected.forEach(cacheDB.createItem);
+        await cacheDB.deleteItem(expected[1].id);
+        const actual = await cacheDB.readAllItems();
+        expect(actual).toEqual([expected[0]]);
+    })
+
 })
