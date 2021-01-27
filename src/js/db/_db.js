@@ -1,6 +1,6 @@
 module.exports = (() => ({
-    addItem: () => {},
-    removeItem: () => {},
-    editItem: () => {},
-    listItems: () => {}
-}))
+  addItem: () => {},
+  removeItem: () => {},
+  editItem: () => {},
+  listItems: () => {},
+}));

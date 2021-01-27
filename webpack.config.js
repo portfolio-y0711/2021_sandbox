@@ -35,7 +35,9 @@ module.exports = {
     devServer: {
         contentBase: path.join(__dirname, 'dist'),
         publicPath: '/dist/',
+        watchContentBase: true,
         compress: true,
+        hot: true,
         port: 4000
     },
     plugins: [

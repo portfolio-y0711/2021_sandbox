@@ -99,7 +99,7 @@ describe('Store Module: applyMiddleware', () => {
         const logMiddleware = (store) => (next) => (action) => {
             return next(action)
         };
-        const asyncMiddleware = (store) => (next) => (action) => {
+        const asyncMiddleware = ({ dispatch }) => (next) => (action) => {
             if (!action.payload || !action.payload.then) {
                 return next(action);
             }

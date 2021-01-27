@@ -19,6 +19,7 @@
     "cypress": "^6.3.0",
     "devtools-detect": "^3.0.1",
     "eslint": "^7.18.0",
+    "eslint-config-airbnb-babel": "^0.2.1",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "html-webpack-plugin": "^4.5.1",
@@ -32,9 +33,16 @@
   "scripts": {
     "build": "npx pug-cli -P ./src/html/index.pug -o ./src/html && browserify ./src/js/main.js -o ./dist/bundle.js",
     "dev": "nodemon --watch ./public/js/ --watch ./public/index.pug -x 'npm run build'",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll --runInBand"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "eslintIgnore": [
+    "*.spec.ts",
+    "*.test.js"
+  ],
+  "jest": {
+    "testPathIgnorePatterns": ["cypress"]
+  }
 }

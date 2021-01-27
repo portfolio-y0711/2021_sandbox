@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const html = fs.readFileSync(path.resolve(__dirname, '../index.html'), 'utf8')
+const html = fs.readFileSync(path.resolve(__dirname, '../html/index.html'), 'utf8')
 
 describe('Input Module', () => {
     let input;
@@ -8,7 +8,9 @@ describe('Input Module', () => {
 
     beforeEach(() => {
         document.documentElement.innerHTML = html.toString();
-        stub_mediator = ({ createTodoItem: () => {} }) ;
+        stub_mediator = ({
+            createTodoItem: () => {}
+        });
         input = require('./input')(document, stub_mediator);
         spyOn(console, 'error');
     })
@@ -24,19 +26,22 @@ describe('Input Module', () => {
     })
 
     it('should set default value of #todo-date as provided', () => {
-       input.setDefaultDate('2021-01-01');
-       const expected = '2021-01-01';
-       expect(document.getElementById('todo-date').value).toEqual(expected);
+        input.setDefaultDate('2021-01-01');
+        const expected = '2021-01-01';
+        expect(document.getElementById('todo-date').value).toEqual(expected);
     })
 
     it('should set default value of #todo-date as today when no default value provided', () => {
-       input.setDefaultDate();
-       const expected = new Date().toISOString().split('T')[0] || '2021-01-24';
-       expect(document.getElementById('todo-date').value).toEqual(expected);
+        input.setDefaultDate();
+        const expected = new Date().toISOString().split('T')[0] || '2021-01-24';
+        expect(document.getElementById('todo-date').value).toEqual(expected);
     })
 
     it('should provide data fetched from todoForm', () => {
-        const expected = { date: '2021-02-01', name: 'tobe..fetched' };
+        const expected = {
+            date: '2021-02-01',
+            name: 'tobe..fetched'
+        };
         input.setDefaultDate(expected.date);
         document.getElementById('todo-title').value = expected.name;
         expect(input.getTodoFormData()).toEqual(expected);
@@ -58,13 +63,16 @@ describe('Input Module', () => {
     it('should add click listener to #add-button to invoke mediator.createTodoItem with todoItem', () => {
         document.getElementById('todo-title').value = 'any';
         const spyFn = jest.spyOn(stub_mediator, 'createTodoItem');
-        input.addButton.dispatchEvent(new Event('click')) ;
-        expect(spyFn).toBeCalledWith({ date: new Date().toISOString().split('T')[0], name: 'any' });
+        input.addButton.dispatchEvent(new Event('click'));
+        expect(spyFn).toBeCalledWith({
+            date: new Date().toISOString().split('T')[0],
+            name: 'any'
+        });
     })
 
     it('should clear text of #todo-title after #add-button clicked', () => {
         document.getElementById('todo-title').value = 'any';
-        input.addButton.dispatchEvent(new Event('click')) ;
+        input.addButton.dispatchEvent(new Event('click'));
         const expected = '';
         expect(document.getElementById('todo-title').value).toEqual(expected);
     })

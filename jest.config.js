@@ -5,6 +5,7 @@
 
 module.exports = {
   clearMocks: true,
-  coverageDirectory: "coverage",
-  coverageProvider: "v8",
+  coverageDirectory: 'coverage',
+  coverageProvider: 'v8',
+  testPathIgnorePatterns: ['integration'],
 };

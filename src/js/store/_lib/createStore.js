@@ -1,38 +1,34 @@
-const { LOG } = require('../../util')
-
 module.exports = (reducer) => {
-    state = undefined;
-    listeners = [];
+  let state;
+  const listeners = [];
 
-    function getState() {
-        return state;
-    }
+  function getState() {
+    return state;
+  }
 
-    function dispatch(action) {
-        state = reducer(state, action);
-        listeners.forEach((callback) => {
-            callback();
-        });
-        return action;
-    }
-
-    function subscribe(listener) {
-        listeners.push(listener);
-        return () => {
-            listeners.splice(listeners.indexOf(listener), 1);
-        }
-    }
-
-    return ({
-        getState: getState,
-        subscribe: subscribe,
-        dispatch: dispatch,
-        state: state,
-        listeners: listeners,
+  function dispatch(action) {
+    state = reducer(state, action);
+    listeners.forEach((callback) => {
+      callback();
     });
-}
+    return action;
+  }
 
+  function subscribe(listener) {
+    listeners.push(listener);
+    return () => {
+      listeners.splice(listeners.indexOf(listener), 1);
+    };
+  }
 
+  return ({
+    getState,
+    subscribe,
+    dispatch,
+    state,
+    listeners,
+  });
+};
 
 // module.exports = (uid) => (initItems) => new (class {
 //     items
