@@ -7,7 +7,7 @@ module.exports = {
   clearMocks: true,
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
-  testPathIgnorePatterns: ['integration'],
+  testPathIgnorePatterns: ['integration', 'fixtures'],
   moduleNameMapper: {
     "%(.*)$": "<rootDir>/src/$1",
     "#tests/(.*)": [

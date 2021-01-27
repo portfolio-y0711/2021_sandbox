@@ -39,7 +39,7 @@ describe('Cache DB', () => {
         expected.forEach(cacheDB.createItem);
         const expectedIds = expected.map(e => e.id);
         const actual = (await cacheDB.readAllItems()).map(doc => doc.id);
-        expect(actual).toEqual(expectedIds);
+        actual.forEach(a => expect(expectedIds.includes(a)).toBeTruthy());
     })
 
     it('delete a item', async () => {

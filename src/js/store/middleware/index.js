@@ -41,7 +41,7 @@ const asyncMiddleware = (injection) => ({ dispatch }) => (next) => (action) => {
 
 /* eslint-disable global-require */
 const middlewares = [
-  logMiddleware(require('../util').LOG),
+  logMiddleware(require('../../util').LOG),
 ];
 /* eslint-enable global-require */
 
