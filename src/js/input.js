@@ -1,27 +1,22 @@
 /* eslint-disable no-param-reassign */
 const { LOG } = require('./util');
 
-// function validateTodoFormInput(formInput) {
-//   console.log(formInput)
-//   const isInValidate = formInput.date == '' || formInput.name == '';
-//   LOG(`[inp] ${isInValidate ? '(warning) invalidate form' : 'validate form'}`);
-//   return isInValidate;
-// }
-
 module.exports = (document, mediator) => new (class {
   todoForm;
   addButton;
+  document;
 
   constructor() {
-    this.setDefaultDate();
+    this.document = document;
     this.todoForm = document.getElementById('todo-form');
     this.addButton = document.getElementById('add-button');
+    this.setDefaultDate();
     this.listenToAddButton();
   }
 
   // eslint-disable-next-line class-methods-use-this
   setDefaultDate(YYYY_MM_DD) {
-    document.getElementById('todo-date').value = YYYY_MM_DD || new Date().toISOString().split('T')[0];
+    this.document.getElementById('todo-date').value = YYYY_MM_DD || new Date().toISOString().split('T')[0];
   }
 
   listenToAddButton() {
@@ -29,7 +24,6 @@ module.exports = (document, mediator) => new (class {
       LOG('\n[u/i] add-button clicked');
       e.preventDefault();
       const formInput = this.getTodoFormData(e);
-      // eslint-disable-next-line no-unused-expressions
       if (this.validateTodoFormInput(formInput)) {
           console.error('input all entries!');
       } else {
@@ -37,15 +31,6 @@ module.exports = (document, mediator) => new (class {
           this.todoForm.reset();
           this.setDefaultDate();
       }
-      // this.validateTodoFormInput(formInput)
-      //   ? (() => {
-      //     // eslint-disable-next-line no-console
-      //     console.error('input all entries!');
-      //   })() : (() => {
-      //     mediator.createTodoItem(formInput);
-      //     this.todoForm.reset();
-      //     this.setDefaultDate();
-      //   })();
     }, true);
 
     this.todoForm.addEventListener('keydown', (e) => {
@@ -53,23 +38,13 @@ module.exports = (document, mediator) => new (class {
         e.preventDefault();
         LOG('\n[u/i] keydown enter');
         const formInput = this.getTodoFormData(e);
-        // eslint-disable-next-line no-unused-expressions
-
-      if (this.validateTodoFormInput(formInput)) {
-          console.error('input all entries!');
-      } else {
-          mediator.createTodoItem(formInput);
-          this.todoForm.reset();
-          this.setDefaultDate();
-      }
-        // this.validateTodoFormInput(formInput) ? (() => {
-        //   // eslint-disable-next-line no-console
-        //   console.error('input all entries!!');
-        // })() : (() => {
-        //   mediator.createTodoItem(formInput);
-        //   this.todoForm.reset();
-        //   this.setDefaultDate();
-        // })();
+        if (this.validateTodoFormInput(formInput)) {
+            console.error('input all entries!');
+        } else {
+            mediator.createTodoItem(formInput);
+            this.todoForm.reset();
+            this.setDefaultDate();
+        }
       }
     }, true);
   }
@@ -80,17 +55,10 @@ module.exports = (document, mediator) => new (class {
       const prop = { [`${key}`]: val };
       return { ...acc, ...prop };
     }, {});
-    // const data = {};
-    // for (const [key, val] of formData.entries()) {
-    //   data[key] = val;
-    // }
-    // return data;
   }
 
   validateTodoFormInput(formInput) {
-    console.log(formInput)
     const isInValidate = formInput.date === '' || formInput.name === '';
-    console.log(isInValidate)
     LOG(`[inp] ${isInValidate ? '(warning) invalidate form' : 'validate form'}`);
     return isInValidate;
   }
