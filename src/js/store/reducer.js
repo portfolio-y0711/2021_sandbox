@@ -19,6 +19,10 @@ module.exports = (state = { itemTodos: [...sampleTodos] }, action) => {
   let item;
 
   switch (action.type) {
+    case 'CACHE response SUCCESS':
+      return ({
+        ...state
+      })
     case 'create':
       item = ({
         id: uid(),

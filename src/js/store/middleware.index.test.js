@@ -10,14 +10,14 @@ describe('Store Module: middlewares', () => {
     beforeEach(() => {
         applyMiddleware = require('./_lib/applyMiddleware');
         createStore = require('./_lib/createStore');
-        middlewares = require('./middlewares').middlewares;
+        middlewares = require('./middleware.index').middlewares;
         reducer = require('./reducer');
         store = createStore();
     })
 
-    it('logMiddleware catch every dispatches', () => {
+    it('logmiddleware catch every dispatches', () => {
         spyFn = jest.fn();
-        middlewares = [require('./middlewares').logMiddleware(spyFn)];
+        middlewares = [require('./middleware.index').logMiddleware(spyFn)];
         const store = applyMiddleware(... middlewares)(createStore)(reducer);
         store.dispatch({type: 'TEST1'});
         store.dispatch({type: 'TEST2'});
@@ -25,9 +25,27 @@ describe('Store Module: middlewares', () => {
         expect(spyFn).toHaveBeenCalledTimes(3);
     })
 
+    it('cacheMiddleware catch any dispatch tagged as CACHE request', async() => {
+        spyFn = jest.fn();
+        middlewares = [require('./middleware.index').cacheMiddleware(spyFn)]
+        const store = applyMiddleware(... middlewares)(createStore)(reducer);
+        store.dispatch({
+            type: 'CACHE request',
+            payload: new Promise(res => {
+                res('success')
+            })
+        });
+        await (new Promise(res => setTimeout(res, 0)));
+        await (new Promise(res => setTimeout(res, 0)));
+        await (new Promise(res => setTimeout(res, 0)));
+        // store.dispatch({type: 'TEST2'});
+        // store.dispatch({type: 'TEST3'});
+        expect(spyFn).toHaveBeenCalledTimes(1);
+    })
+
     it('asyncMiddleware catch dispatch containing promised payload', () => {
         spyFn = jest.fn();
-        middlewares = [require('./middlewares').asyncMiddleware(spyFn)];
+        middlewares = [require('./middleware.index').asyncMiddleware(spyFn)];
         const store = applyMiddleware(... middlewares)(createStore)(reducer);
         store.dispatch({
             type: 'HTTP request',

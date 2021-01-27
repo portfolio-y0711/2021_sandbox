@@ -8,4 +8,10 @@ module.exports = {
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
   testPathIgnorePatterns: ['integration'],
+  moduleNameMapper: {
+    "%(.*)$": "<rootDir>/src/$1",
+    "#tests/(.*)": [
+      "<rootDir>/__tests__/fixtures/$1",
+    ]
+  },
 };
