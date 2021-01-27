@@ -1,4 +1,5 @@
-const PouchDB = require('pouchdb');
+// const PouchDB = require('pouchdb');
+const PouchDB = require('pouchdb-browser');
 PouchDB.plugin(require('pouchdb-adapter-memory'));
 PouchDB.plugin(require('pouchdb-find'));
 

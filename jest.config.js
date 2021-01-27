@@ -14,4 +14,5 @@ module.exports = {
       "<rootDir>/__tests__/fixtures/$1",
     ]
   },
+  verbose: true
 };

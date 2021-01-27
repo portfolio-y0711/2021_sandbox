@@ -1,5 +1,5 @@
 
-describe('Middleware Module: cache', () => {
+describe('Middleware Module: http', () => {
     it('cacheMiddleware catch any dispatch tagged as HTTP request', () => {
         let spyFn = jest.fn();
         const createStoreForTest = require('#tests/middleware');

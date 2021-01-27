@@ -18,6 +18,7 @@ module.exports = (doc, input, output, store, db) => new (class {
     createTodoItem(item) {
         LOG('[med] create new todo');
         this.store.dispatch({type: 'create', payload: item});
+        this.store.dispatch({type: 'CACHE request', payload: item});
         this.output.updateDisplay(this.store.getState().itemTodos);
     }
     deleteTodoItem(itemId) {

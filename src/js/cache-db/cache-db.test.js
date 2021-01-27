@@ -1,4 +1,4 @@
-describe('Cache DB', () => {
+describe('Cache DB: pouchdb Create/Read/Delete', () => {
     let cacheDB;
 
     beforeAll(() => {

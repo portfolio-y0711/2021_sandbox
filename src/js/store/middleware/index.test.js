@@ -1,25 +1,17 @@
 /* eslint-disable global-require */
 // eslint-disable-next-line no-undef
 describe('Store Module: middlewares', () => {
-    // let applyMiddleware;
-    // let createStore;
-    // let middlewares;
-    // let reducer;
     let store;
     let createStoreForTest = require('#tests/middleware');
 
     beforeEach(() => {
-        // applyMiddleware = require('../_lib/applyMiddleware');
-        // createStore = require('../_lib/createStore');
         middlewares = require('./index').middlewares;
-        // reducer = require('../reducer');
-        // store = createStore();
         store = createStoreForTest(middlewares);
     })
 
     it('logMiddleware catch every dispatches', () => {
         spyFn = jest.fn();
-        middlewares = [require('.').logMiddleware(spyFn)];
+        middlewares = [require('./index').logMiddleware(spyFn)];
         // const store = applyMiddleware(... middlewares)(createStore)(reducer);
         store = createStoreForTest(middlewares);
         store.dispatch({type: 'TEST1'});

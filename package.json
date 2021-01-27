@@ -4,15 +4,21 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "buffer": "^6.0.3",
     "jest": "^26.6.3",
     "jquery": "^3.5.1",
-    "pouchdb": "^7.2.2",
     "pouchdb-adapter-memory": "^7.2.2",
-    "pouchdb-find": "^7.2.2"
+    "pouchdb-browser": "^7.2.2",
+    "pouchdb-find": "^7.2.2",
+    "pouchdb-utils": "^7.2.2",
+    "process": "^0.11.10",
+    "stream-browserify": "^3.0.0",
+    "webpack": "^4.46.0"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.12.1",
     "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
+    "@babel/plugin-transform-runtime": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "babel-loader": "^8.2.2",
     "browserify": "^17.0.0",
@@ -25,7 +31,6 @@
     "json-server": "^0.16.3",
     "pug-cli": "^1.0.0-alpha6",
     "style-loader": "^2.0.0",
-    "webpack": "^5.17.0",
     "webpack-cli": "^4.4.0",
     "webpack-dev-server": "^3.11.2"
   },
