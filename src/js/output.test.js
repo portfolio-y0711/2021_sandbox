@@ -1,13 +1,10 @@
-const fs = require('fs')
-const path = require('path')
-const html = fs.readFileSync(path.resolve(__dirname, '../html/index.html'), 'utf8')
 
 describe('Output Module', () => {
     let output;
     let stub_mediator;
 
     beforeEach(() => {
-        document.documentElement.innerHTML = html.toString();
+        document.documentElement.innerHTML = require('#tests/html');
         stub_mediator = ({ deleteTodoItem: () => {} });
         output = require('./output')(document, stub_mediator);
     });

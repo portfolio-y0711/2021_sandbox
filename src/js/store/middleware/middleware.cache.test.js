@@ -4,6 +4,7 @@ const META = {
    READ   : 'READ',
    CREATE : 'CREATE',
    DELETE : 'DELETE',
+   SUCCESS: 'SUCCESS',
 };
 
 describe('Middleware Module: cacheMiddleware', () => {
@@ -78,15 +79,18 @@ describe('Middleware Module: cacheMiddleware', () => {
             id: '3BX%',
             name: 'this is from cache middleware test 1'
         });
-        await store.dispatch({type: APP__CACHE_REQUEST , payload: new Promise(res => { res('aaa') }), meta: { requestType: 'READ' }});
+        await store.dispatch({type: APP__CACHE_REQUEST , payload: new Promise(res => { res('aaa') }), meta: { requestType: META.READ }});
         await new Promise(res => setTimeout(res, 0));
         expect(spyFn).toHaveBeenCalledWith({ 
             payload: [{
                 id: '3BX%',
                 name: 'this is from cache middleware test 1'
             }], 
-            type: '[CAC] CACHE response SUCCESS',
-            meta: { requestType: 'READ'}
+            type: '[CAC] CACHE response',
+            meta: { 
+                requestType: META.READ,
+                resultType: META.SUCCESS, 
+            }
         });
     })
 

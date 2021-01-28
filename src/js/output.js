@@ -18,7 +18,6 @@ module.exports = (document, mediator) => new (class {
     }
 })
 
-
 const createListItem = (document, mediator, item) => {
     const li = document.createElement('li');
     li.setAttribute('id', item.id);

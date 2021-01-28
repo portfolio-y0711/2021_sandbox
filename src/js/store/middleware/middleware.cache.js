@@ -1,6 +1,13 @@
+const META = {
+   READ   : 'READ',
+   CREATE : 'CREATE',
+   DELETE : 'DELETE',
+   SUCCESS: 'SUCCESS',
+};
+
 const APP__INIT = '[APP] Init';
 const APP__CACHE_REQUEST = '[APP] CACHE request';
-const CAC__CACHE_RESPONSE_SUCCESS = '[CAC] CACHE response SUCCESS';
+const CAC__CACHE_RESPONSE = '[CAC] CACHE response';
 
 const CacheMiddleware = ({ db, spy1, spy2, spy3 }) => ({ dispatch }) => (next) => async(action) => {
   next(action);
@@ -19,9 +26,9 @@ const CacheMiddleware = ({ db, spy1, spy2, spy3 }) => ({ dispatch }) => (next) =
           spy1();
           const todoItems = await db.readAllItems();
           const newAction = {
-            type: CAC__CACHE_RESPONSE_SUCCESS,
+            type: CAC__CACHE_RESPONSE,
             payload: todoItems,
-            meta: action.meta
+            meta: {...action.meta, resultType: META.SUCCESS }
           };
           dispatch(newAction);
           spy2(newAction);
