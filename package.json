@@ -35,9 +35,10 @@
     "webpack-dev-server": "^3.11.2"
   },
   "scripts": {
-    "build": "npx pug-cli -P ./src/html/index.pug -o ./src/html && browserify ./src/js/main.js -o ./dist/bundle.js",
-    "dev": "nodemon --watch ./public/js/ --watch ./public/index.pug -x 'npm run build'",
-    "test": "jest --watchAll --runInBand"
+    "build": "browserify ./src/js/main.js -o ./dist/bundle.js",
+    "dev": "nodemon --watch ./src/js/ -x 'npm run build'",
+    "test": "jest --watchAll --runInBand src/",
+    "test:e2e": "jest --watchAll __tests__"
   },
   "keywords": [],
   "author": "",

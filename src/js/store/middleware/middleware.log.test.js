@@ -1,5 +1,5 @@
 describe('Middleware Module: log', () => {
-    it('logmiddleware catch every dispatches', () => {
+    it('logMiddleware catch every dispatches', () => {
         let spyFn = jest.fn();
         const createStoreForTest = require('#tests/middleware');
         const middlewares = [require('./middleware.log')(spyFn)];

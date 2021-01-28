@@ -1,9 +1,9 @@
-// const PouchDB = require('pouchdb');
-const PouchDB = require('pouchdb-browser');
+const PouchDB = require('pouchdb');
+// const PouchDB = require('pouchdb-browser');
 PouchDB.plugin(require('pouchdb-adapter-memory'));
 PouchDB.plugin(require('pouchdb-find'));
 
-module.exports = (() => {
+const createDB = () => {
     let conn;
     return new (class Singleton {
         constructor() {
@@ -13,6 +13,29 @@ module.exports = (() => {
         }
         getConnection() {
             return conn;
+        }
+        async seedItems(items) {
+            const sampleTodos = items || [
+                {
+                    id: '9377',
+                    name: 'this is list',
+                    date: '2021-01-20',
+                },
+                {
+                    id: 'efd3',
+                    name: 'this is another list',
+                    date: '2021-01-22',
+                },
+            ];
+            sampleTodos.forEach(async(itemTodo) => {
+                await this.createItem(itemTodo);
+            });
+        }
+        async subscribeCache() {
+            conn.changes({
+                since: 'now', // 'now'
+                live: true
+            }).on('change', (change) => (change))
         }
         async resetDB() {
             await conn.destroy();
@@ -33,13 +56,20 @@ module.exports = (() => {
             return doc;
         }
         async readAllItems() {
-            const res = conn.allDocs({include_docs: true});
-            return (await res).rows.map(n => {
+            const raw = await conn.allDocs({include_docs: true});
+            const result = raw.rows.map(n => {
                 const doc = n.doc;
                 delete doc._id;
                 delete doc._rev;
                 return doc;
-            });
+            })
+            return result;
+            // return (await res).rows.map(n => {
+            //     const doc = n.doc;
+            //     delete doc._id;
+            //     delete doc._rev;
+            //     return doc;
+            // });
         }
         async deleteItem(docId) {
             const doc_Id = (await conn.find({
@@ -50,4 +80,6 @@ module.exports = (() => {
             });
         }
     }) ();
-})()
+}
+
+module.exports = createDB;

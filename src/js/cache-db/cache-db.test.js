@@ -2,7 +2,7 @@ describe('Cache DB: pouchdb Create/Read/Delete', () => {
     let cacheDB;
 
     beforeAll(() => {
-        cacheDB = require('./index')
+        cacheDB = require('./index')();
     })
     afterEach(async () => {
         await cacheDB.resetDB();
@@ -12,8 +12,8 @@ describe('Cache DB: pouchdb Create/Read/Delete', () => {
         let expected = {
             id: 'C#4F',
             name: 'this is for testing couchdb',
-            createdAt: new Date().toString(),
-            updatedAt: new Date().toString()
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
         };
         await cacheDB.createItem({
             ... expected

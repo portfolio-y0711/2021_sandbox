@@ -9,7 +9,7 @@ describe('Store Module: middlewares', () => {
         store = createStoreForTest(middlewares);
     })
 
-    it('logMiddleware catch every dispatches', () => {
+    it.skip('logMiddleware catch every dispatches', () => {
         spyFn = jest.fn();
         middlewares = [require('./index').logMiddleware(spyFn)];
         // const store = applyMiddleware(... middlewares)(createStore)(reducer);
