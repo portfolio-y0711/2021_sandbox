@@ -1,6 +1,6 @@
 const {
     APP__INIT,
-} = require('../vo');
+} = require('../../vo');
 
 describe('Middleware: app', () => {
     it(`appMiddleware catch "${APP__INIT}" action`, async () => {

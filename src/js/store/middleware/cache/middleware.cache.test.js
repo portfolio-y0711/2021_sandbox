@@ -1,18 +1,17 @@
-const APP__INIT = '[APP] Init';
-const APP__CACHE_REQUEST = '[APP] CACHE request';
-const META = {
-   READ   : 'READ',
-   CREATE : 'CREATE',
-   DELETE : 'DELETE',
-   SUCCESS: 'SUCCESS',
-};
+const {
+    META,
+    APP__INIT,
+    APP__CACHE_REQUEST,
+    CAC__CACHE_RESPONSE,
+    APP__UI_UPDATE,
+} = require('../../vo');
 
 describe('Middleware Module: cacheMiddleware', () => {
     let createStoreForTest;
     let db;
     beforeAll(async() => {
         createStoreForTest = require('#tests/middleware');
-        db = require('../../cache-db')();
+        db = require('../../../cache-db')();
     })
 
     afterEach(async() => {
@@ -86,7 +85,7 @@ describe('Middleware Module: cacheMiddleware', () => {
                 id: '3BX%',
                 name: 'this is from cache middleware test 1'
             }], 
-            type: '[CAC] CACHE response',
+            type: `${CAC__CACHE_RESPONSE} ${META.READ}: ${META.SUCCESS}`,
             meta: { 
                 requestType: META.READ,
                 resultType: META.SUCCESS, 

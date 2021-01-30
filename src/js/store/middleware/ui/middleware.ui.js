@@ -1,6 +1,6 @@
 const {
    APP__UI_UPDATE, 
-} = require('../vo');
+} = require('../../vo');
 
 const UiMiddleware = ({ output, spy1, spy2 }) => (store) => (next) => (action) => {
     next(action);

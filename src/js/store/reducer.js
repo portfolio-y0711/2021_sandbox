@@ -35,7 +35,8 @@ module.exports = (state = { itemTodos: [...sampleTodos] }, action) => {
           .filter((_item) => _item.id !== action.payload),
       });
 
-    case 'CACHE response SUCCESS':
+    case '[APP] props UPDATE':
+      console.log(action.payload);
       return ({
         ...state
       })

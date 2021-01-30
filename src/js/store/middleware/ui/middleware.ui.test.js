@@ -4,7 +4,7 @@ const {
     APP__CACHE_REQUEST,
     CAC__CACHE_RESPONSE,
     APP__UI_UPDATE,
-} = require('../vo');
+} = require('../../vo');
 
 document.documentElement.innerHTML = require('#tests/html');
 
@@ -14,7 +14,7 @@ describe('Middleware: ui', () => {
 
     beforeAll(() => {
         createStoreForTest = require('#tests/middleware');
-        output = require('../../output')(document, { });
+        output = require('../../../output')(document, { });
     })
 
     it(`uiMiddleware catch "${APP__UI_UPDATE}`, () => {
@@ -35,7 +35,7 @@ describe('Middleware: ui', () => {
     })
 
     it(`uiMiddleware catch "${APP__UI_UPDATE}`, () => {
-        const output = require('../../output')(document, { });
+        const output = require('../../../output')(document, { });
         const spyFn = jest.spyOn(output, 'updateDisplay');
         const middlewares = [
             require('./middleware.ui')({

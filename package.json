@@ -37,7 +37,8 @@
   "scripts": {
     "build": "browserify ./src/js/main.js -o ./dist/bundle.js",
     "dev": "nodemon --watch ./src/js/ -x 'npm run build'",
-    "test": "jest --watchAll --runInBand src/",
+    "test": "jest --watchAll --runInBand",
+    "testAll": "jest --watchAll --runInBand src/",
     "test:e2e": "jest --watchAll __tests__"
   },
   "keywords": [],

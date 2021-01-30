@@ -1,13 +1,9 @@
-const META = {
-   READ   : 'READ',
-   CREATE : 'CREATE',
-   DELETE : 'DELETE',
-   SUCCESS: 'SUCCESS',
-};
-
-const APP__INIT = '[APP] Init';
-const APP__CACHE_REQUEST = '[APP] CACHE request';
-const CAC__CACHE_RESPONSE = '[CAC] CACHE response';
+const {
+  META,
+  APP__INIT,
+  APP__CACHE_REQUEST,
+  CAC__CACHE_RESPONSE
+} = require('../vo');
 
 const CacheMiddleware = ({ db, spy1, spy2, spy3 }) => ({ dispatch }) => (next) => async(action) => {
   next(action);
@@ -21,15 +17,24 @@ const CacheMiddleware = ({ db, spy1, spy2, spy3 }) => ({ dispatch }) => (next) =
       }
       return
     case APP__CACHE_REQUEST:
+      dispatch({ 
+        type: CAC__CACHE_RESPONSE,
+        meta: { 
+          requestType: action.meta.requestType,
+          responseStatus: META.START 
+        } 
+      })
       switch(action.meta.requestType) {
         case 'READ':
           spy1();
           const todoItems = await db.readAllItems();
+          console.log(todoItems);
           const newAction = {
             type: CAC__CACHE_RESPONSE,
             payload: todoItems,
-            meta: {...action.meta, resultType: META.SUCCESS }
+            meta: {...action.meta, responseStatus: META.SUCCESS }
           };
+          console.log(newAction);
           dispatch(newAction);
           spy2(newAction);
           return

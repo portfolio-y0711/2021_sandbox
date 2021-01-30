@@ -1,3 +1,8 @@
+const { 
+    META,
+    APP__INIT,
+    APP__CACHE_REQUEST,
+} = require('./store/vo');
 const { LOG } = require('./util');
 const seed = require('./cache-db/seed');
 
@@ -10,15 +15,13 @@ module.exports = (doc, input, output, store, db) => new (class {
         this.store = store;
         this.input = input(doc, this);
         this.initialize();
-        this.readTodoItems();
+        // this.readTodoItems();
     }
     initialize() {
-        this.store.dispatch({ type: '[APP] Init', payload: seed });
+        this.store.dispatch({ type: APP__INIT, payload: seed });
+        // this.store.dispatch({ type: APP__CACHE_REQUEST, meta: { requestType: META.READ }});
     }
     readTodoItems() {
-        LOG('[med] read todos');
-        this.store.dispatch({ type: 'read'});
-        this.store.dispatch({type: 'CACHE request', meta: { requestType: 'READ' }});
         this.output.updateDisplay(this.store.getState().itemTodos);
     }
     createTodoItem(item) {
