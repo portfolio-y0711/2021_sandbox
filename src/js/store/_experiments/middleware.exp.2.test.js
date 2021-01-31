@@ -7,7 +7,7 @@ describe('Middleware: internals', () => {
         createStoreForTest = require('#tests/middleware');
     })
 
-    it(`(1) right to left processing order`, async() => {
+    it.skip(`(1) right to left processing order`, async() => {
         let actual = [];
         const middlewares = [
             (store) => (next) => async(action) => {
@@ -46,5 +46,8 @@ describe('Middleware: internals', () => {
         expect(actual).toEqual([3, 2, 1]);
     })
 
+
+    it.skip(`(2) right to left processing order`, async() => {
+    })
 })
 
