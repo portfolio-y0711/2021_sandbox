@@ -6,7 +6,7 @@ describe('Middleware: async', () => {
 
     it('catch any AsyncActionCommand dispach with promise', async() => {
        let actual;
-       const middlewares = [AsyncMiddleware((x) => { actual = x })];
+       const middlewares = [AsyncMiddleware((dispatch) => { actual = dispatch })];
        const store = createStoreForMiddlewareTest(middlewares);
        const expected = ASY_DOCS_TODOITEMS;
        CCH_DB_AWAIT.promise = new Promise((res, rej) => setTimeout(res, 500, 'promised result'));

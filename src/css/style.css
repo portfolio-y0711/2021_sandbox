@@ -13,10 +13,13 @@ body {
     padding: 10px;
     margin: 10px 0;
 }
-.todl-list li{
+.todo-list li{
     padding: 15px;
     border-bottom: solid 1px grey;
     list-style-type: none;
+}
+li p{
+    min-width: 150px;
 }
 .todo-item {
     display: flex;

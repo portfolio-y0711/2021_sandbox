@@ -2,6 +2,7 @@ class ActionCommand {
     sender;
     subject;
     command;
+    arguments;
     constructor(sender, subject, command) {
         this.sender = sender;
         this.subject = subject;

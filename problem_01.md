@@ -6,7 +6,7 @@
 
 ### 1. 문제 해결의 기대효과 (expected effect of problem solving)
 
-<details>
+<details open>
 <summary>...(닫기)</summary>
 
 <br/>
@@ -29,7 +29,7 @@
 
 ### 2. 잠정적 결론들 (tentative conclusions)
 
-<details>
+<details open>
 <summary>...(닫기)</summary>
 
 <br/>
@@ -40,13 +40,17 @@
 
 * middleware 호출 스택은 applyMiddleware 인자의 순서대로  **_좌에서 우로_** 열린다. 
 
+<br/>
+
 * 일반적인 middleware의 경우:
 
     *  **_비동기 처리 미들웨어 앞단에_** 배치하는 것이 안전하다. 
 
     *  next(action)은 각 분기 문의 반환 시점에 호출하는 것이 안전하다. 
 
-* 비동기 요청을 동기화 하는 middleware의 경우:
+<br/>
+
+* 비동기 요청을 동기화 하는 (async) middleware의 경우:
 
   *  **_가장 마지막에 배치_** 하는 것이 안전하다. 
 
@@ -64,14 +68,14 @@
 
 ### 3. 탐구 과정 (exploration process)
 
-<details open="true">
+<details open>
 <summary>...(닫기)</summary>
 
 <!-- #region 3-1 redux 라이브러리 구현체 및 테스트 코드 작성하기 -->
 
 #### 3-1. redux 라이브러리 구현체 및 테스트 코드 작성하기 
 
-<details>
+<details open>
 <summary>...(닫기)</summary>
 
 <br/>
@@ -90,8 +94,11 @@
 > 
 > 단일 middleware를 처리할 수 있는 lightweight redux 구현체는 아래 github repo를 참고하시길 바랍니다. 
 
-redux lightweight: [바로가기](https://github.com/heiskr/prezzy-redux-scratch)
+<br/>
 
+참고한 redux tutorial: [바로가기](https://github.com/heiskr/prezzy-redux-scratch)
+
+<br/>
 
 * 그 동안 여러 라이브러리의 동작을 잘 이해하고자 :
 
@@ -102,6 +109,8 @@ redux lightweight: [바로가기](https://github.com/heiskr/prezzy-redux-scratch
     * 샘플 프로젝트를 clone해서 디버거를 돌려보거나 
 
     * 라이브러리 내에 있는 테스트 코드를 살펴보는 등의 방법을 사용해왔습니다.  
+
+<br/>
 
 * 금번 미니프로젝트를 진행하면서 처음으로 
 
@@ -140,7 +149,7 @@ redux lightweight: [바로가기](https://github.com/heiskr/prezzy-redux-scratch
 
 #### 3-2. redux 합성 함수 (compose function) 살펴보기 
 
-<details>
+<details open>
 <summary>...(닫기)</summary>
 
 #### ❖ 합성 함수 (compose function)
@@ -538,7 +547,7 @@ await new Promise(res => setTimeout(res, 2000));
 
 #### 3-7. 버그 없는 깔끔한 코드를 작성하기 위해서도 next(action) 호출은 블록의 최상단에 위치시키는 것이 좋습니다.
 
-<details open="true">
+<details open>
 <summary>..(닫기)</summary>
 
 * 동기 블록킹 문제 외에도 redux의 middleware의 **_코드를 실수 없이 깔끔하게 작성하기 위해서_** 도 next 호출 코드가 최상단에 위치하는 것이 좋다. 

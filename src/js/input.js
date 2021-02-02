@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
-const { MOD_TODO_CREATE } = require('./store/vo');
-const { LOG } = require('./util');
+const { MOD_TODO_CREATE, MOD_INPUT_LOADED } = require('./store/vo');
+const { LOG, uid } = require('./util');
+const { EventLogOf } = require('../js/store/middleware/log/log.util');
 
 module.exports = (document, store) => new (class {
   todoForm;
@@ -13,6 +14,7 @@ module.exports = (document, store) => new (class {
     this.addButton = document.getElementById('add-button');
     this.setDefaultDate();
     this.listenToAddButton();
+    store.dispatch(MOD_INPUT_LOADED);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -22,14 +24,15 @@ module.exports = (document, store) => new (class {
 
   listenToAddButton() {
     this.addButton.addEventListener('click', (e) => {
-      LOG('\n[u/i] add-button clicked');
+      LOG("――――――――――――――――――――――――――――");
+      LOG(EventLogOf({ sender:'U/I', subject:'CREATE', message:'BTN_CLICKED'}));
       e.preventDefault();
       const formInput = this.getTodoFormData(e);
       if (this.validateTodoFormInput(formInput)) {
           console.error('input all entries!');
       } else {
           // mediator.createTodoItem(formInput);
-          MOD_TODO_CREATE.document = formInput;
+          MOD_TODO_CREATE.document = { ...formInput, id: uid() };
           store.dispatch(MOD_TODO_CREATE);
           this.todoForm.reset();
           this.setDefaultDate();
@@ -39,14 +42,14 @@ module.exports = (document, store) => new (class {
     this.todoForm.addEventListener('keydown', (e) => {
       if (e.keyCode === 13) {
         e.preventDefault();
-        LOG('\n[u/i] keydown enter');
+        LOG('――――――――――――――――――――――――――――');
+        LOG(EventLogOf({ sender:'U/I', subject: 'CREATE', message: 'ENTER_KEYDOWN'}));
         const formInput = this.getTodoFormData(e);
         if (this.validateTodoFormInput(formInput)) {
             console.error('input all entries!');
         } else {
             MOD_TODO_CREATE.document = formInput;
             store.dispatch(MOD_TODO_CREATE);
-            // mediator.createTodoItem(formInput);
             this.todoForm.reset();
             this.setDefaultDate();
         }
@@ -64,7 +67,9 @@ module.exports = (document, store) => new (class {
 
   validateTodoFormInput(formInput) {
     const isInValidate = formInput.date === '' || formInput.name === '';
-    LOG(`[inp] ${isInValidate ? '(warning) invalidate form' : 'validate form'}`);
+    LOG(`${isInValidate 
+      ? EventLogOf({ sender: 'VLD', subject:'(WARN)', message: 'INVALIDATE FORM' }) 
+      : EventLogOf({ sender: 'VLD', subject: 'FORM', message: 'VALIDATED'})}`);
     return isInValidate;
   }
 })();

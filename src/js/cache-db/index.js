@@ -17,21 +17,21 @@ const createDB = () => {
         async seedItems(items) {
             const sampleTodos = items || [
                 {
-                    id: '9377',
-                    name: 'this is list',
+                    id: 'efd3',
+                    name: 'this is from seed',
                     date: '2021-01-20',
                 },
                 {
-                    id: 'efd3',
-                    name: 'this is another list',
-                    date: '2021-01-22',
+                    id: '9377',
+                    name: 'this is from seed, too',
+                    date: '2021-01-21',
                 },
             ];
             sampleTodos.forEach(async(itemTodo) => {
                 await this.createItem(itemTodo);
             });
         }
-        async subscribeCache() {
+        subscribeCache() {
             conn.changes({
                 since: 'now', // 'now'
                 live: true
@@ -51,6 +51,11 @@ const createDB = () => {
                 selector: { id: docId },
                 // sort: ['name']
             })).docs[0]
+            // console.log(doc);
+            // const doc = (await conn.find({
+            //     selector: { id: docId },
+            //     // sort: ['name']
+            // })).docs[0]
             delete doc._id;
             delete doc._rev;
             return doc;

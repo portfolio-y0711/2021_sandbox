@@ -1,4 +1,5 @@
 const { LOG } = require('./util');
+const { EventLogOf } = require('../js/store/middleware/log/log.util');
 const { MOD_TODO_DELETE, MOD_OUTPUT_LOADED } = require('./store/vo');
 
 module.exports = (document, store) => new (class {
@@ -8,11 +9,9 @@ module.exports = (document, store) => new (class {
         store.dispatch(MOD_OUTPUT_LOADED);
         store.subscribe(() => {
             this.updateDisplay(store.getState().itemTodos);
-            // this.updateDisplay(store.getState().todoItems);
         })
     }
     updateDisplay(items) {
-        LOG('[out] updateDisplay');
         while(this.todoList.firstChild) {
            this.todoList.removeChild(this.todoList.firstChild);
         }
@@ -38,11 +37,11 @@ const createListItem = (document, store, item) => {
     button.textContent = 'delete'
     button.addEventListener('click', (e) => {
         e.preventDefault()
-        LOG('\n' + '[u/i] delete btn clicked')
+        LOG('――――――――――――――――――――――――――――');
+        LOG(EventLogOf({ sender:'U/I', subject: 'DELETE', message: 'BTN_CLICKED'}));
         const itemId = e.target.parentNode.id
         MOD_TODO_DELETE.document = itemId;
         store.dispatch(MOD_TODO_DELETE)
-        // mediator.deleteTodoItem(itemId)
     })
     li.appendChild(time)
     li.appendChild(p)
