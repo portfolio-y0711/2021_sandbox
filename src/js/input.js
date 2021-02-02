@@ -1,7 +1,8 @@
 /* eslint-disable no-param-reassign */
+const { MOD_TODO_CREATE } = require('./store/vo');
 const { LOG } = require('./util');
 
-module.exports = (document, mediator) => new (class {
+module.exports = (document, store) => new (class {
   todoForm;
   addButton;
   document;
@@ -27,7 +28,9 @@ module.exports = (document, mediator) => new (class {
       if (this.validateTodoFormInput(formInput)) {
           console.error('input all entries!');
       } else {
-          mediator.createTodoItem(formInput);
+          // mediator.createTodoItem(formInput);
+          MOD_TODO_CREATE.document = formInput;
+          store.dispatch(MOD_TODO_CREATE);
           this.todoForm.reset();
           this.setDefaultDate();
       }
@@ -41,7 +44,9 @@ module.exports = (document, mediator) => new (class {
         if (this.validateTodoFormInput(formInput)) {
             console.error('input all entries!');
         } else {
-            mediator.createTodoItem(formInput);
+            MOD_TODO_CREATE.document = formInput;
+            store.dispatch(MOD_TODO_CREATE);
+            // mediator.createTodoItem(formInput);
             this.todoForm.reset();
             this.setDefaultDate();
         }
