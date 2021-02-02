@@ -671,7 +671,7 @@ describe('Middleware: internals', () => {
         expect(actual).toEqual([2,1,3]);
     })
 
-    it(`(11) right to left processing order + async handler 3`, async() => {
+    it.skip(`(11) right to left processing order + async handler 3`, async() => {
         let actual = [];
         const middlewares = [
             (store) => (next) => async(action) => {

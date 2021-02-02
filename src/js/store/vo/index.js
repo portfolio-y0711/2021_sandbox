@@ -1,20 +1,70 @@
+const { ActionCommand, AsyncActionCommand, ActionDocument, ActionEvent } = require('../entity');
+
 const META = {
-   READ   : 'READ',
-   CREATE : 'CREATE',
-   DELETE : 'DELETE',
-   START  : 'START',
-   SUCCESS: 'SUCCESS',
+    READ: 'READ',
+    CREATE: 'CREATE',
+    DELETE: 'DELETE',
+    START: 'START',
+    SUCCESS: 'SUCCESS'
 };
 
-const APP__INIT = '[APP] Init';
-const APP__CACHE_REQUEST = '[APP] initializing CACHE request';
-const CAC__CACHE_RESPONSE = '[CCH] handling CACHE request';
-const APP__UI_UPDATE = '[APP] UI update';
+const MESSAGE_TYPE = {
+    LOADED: 'LOADED',
+    UPDATED: 'UPDATED',
+};
+
+const COMMAND_TYPE = {
+    CREATE: 'CREATE',
+    FETCH: 'FETCH',
+    AWAIT: 'AWAIT',
+    SYNC: 'SYNC'
+};
+
+const DOC_TYPE = {
+    TODO_ITEMS: 'TODO_ITEMS',
+    TODO_ITEM: 'TODO_ITEM',
+    TODO_ID: 'TODO_ID',
+};
+
+const SENDER_TYPE = {
+    MODULE: 'MOD',
+    APPLICATION: 'APP',
+    CACHE: 'CCH',
+    ASYNC: 'ASY'
+};
+
+const SUBJECT_TYPE = {
+    INPUT: 'INPUT',
+    OUTPUT: 'OUTPUT',
+    CREATE: 'CREATE',
+    DELETE: 'DELETE',
+    CACHE: 'CACHE',
+    STATUS: 'STATUS',
+    DB: 'DB',
+    DOCS: 'DOCS'
+};
+
+const MOD_OUTPUT_LOADED = new ActionEvent(SENDER_TYPE.MODULE, SUBJECT_TYPE.OUTPUT, MESSAGE_TYPE.LOADED);
+const MOD_TODO_CREATE = new ActionDocument(SENDER_TYPE.MODULE, SUBJECT_TYPE.CREATE, DOC_TYPE.TODO_ITEM);
+const MOD_TODO_DELETE = new ActionDocument(SENDER_TYPE.MODULE, SUBJECT_TYPE.DELETE, DOC_TYPE.TODO_ID);
+const APP_CACHE_FETCH = new ActionCommand(SENDER_TYPE.APPLICATION, SUBJECT_TYPE.CACHE, COMMAND_TYPE.FETCH);
+const CCH_DB_AWAIT = new AsyncActionCommand(SENDER_TYPE.CACHE, SUBJECT_TYPE.DB, COMMAND_TYPE.AWAIT);
+const ASY_DOCS_TODOITEMS = new ActionDocument(SENDER_TYPE.ASYNC, SUBJECT_TYPE.DOCS, DOC_TYPE.TODO_ITEMS);
+
 
 module.exports = {
     META,
-    APP__INIT,
-    APP__CACHE_REQUEST,
-    CAC__CACHE_RESPONSE,
-    APP__UI_UPDATE,
+    //
+    MESSAGE_TYPE,
+    DOC_TYPE,
+    COMMAND_TYPE,
+    SENDER_TYPE,
+    SUBJECT_TYPE,
+    //
+    MOD_OUTPUT_LOADED,
+    APP_CACHE_FETCH,
+    CCH_DB_AWAIT,
+    ASY_DOCS_TODOITEMS,
+    MOD_TODO_CREATE,
+    MOD_TODO_DELETE,
 }

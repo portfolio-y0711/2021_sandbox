@@ -94,11 +94,11 @@
 
 <br/>
 
-#### 문제점 2: 브라우저 캐싱(pouchdb) + 문서 기반 동기화 데이터베이스(couchdb) 구현에 대한 새로운 요구사항 
+#### 문제점 2: 브라우저 캐싱 + 원격 데이터베이스로 PWA 구현하기 
 
 <br/>
 
-> 메인 프로젝트에 적용할 offline first 기술로 service worker, rabbitMQ(or kafka) 등을 검토하던 끝에  ata sync와 관련한   
+> 메인 프로젝트에 적용할 offline first 기술로 service worker, rabbitMQ(or kafka) 등을 검토하던 끝에 data sync와 관련한   
 > 구현이 가장 간편한 '브라우저 캐시(pouchdb) + 문서 기반 동기화 데이터베이스(couchdb)'를 사용하기로 최종 결정하였다.   
 > 문제는 이와 같은 결정이 지연되는 동안 메인 프로젝트의 기능 개발이 많이 진전되어 복잡성이 증가한 터라 메인 프로젝트에   
 > 직접 적용하기에는 패키지 추가, 기능 추가 등이 부담스러워졌다.  
@@ -110,7 +110,7 @@
 * [CacheMiddleware에게 직접 동기화 처리를 하게 할 것인가](01_problem.md) (완료)
 * [싱글턴 Cache Database 의존성을 언제 생성하고 어떻게 주입할 것인가](01_problem.md) (완료)
 * [Pouchdb Create/Read/Delete 테스트 코드 작성해보기](01_problem.md) (완료)
-* [Couchdb를 도커 머신과 함께 배포하기](01_problem.md) (미결)
+* [Couchdb를 도커 컨테이너로 배포하기](01_problem.md) (미결)
 
 
 [problem01]: (01_problem.md) "Go google"

@@ -1,13 +1,7 @@
-const logMiddleware = require('./log/middleware.log')(require('../../util').LOG);
-const cacheMiddleware = require('./cache/middleware.cache')({
-  db: require('../../cache-db')(), spy1: _=>{}, spy2: _=>{}, spy3: _=>{}
-});
-const appMiddleware = require('./app/middleware.app')({
-  spy1: _=>{}
-});
-const asyncMiddleware = require('./async/middleware.async')({
-  spy1: _=> {}
-})
+const logMiddleware = require('./log');
+const appMiddleware = require('./app');
+const cacheMiddleware = require('./cache');
+const asyncMiddleware = require('./async');
 
 /* eslint-disable global-require */
 const middlewares = [

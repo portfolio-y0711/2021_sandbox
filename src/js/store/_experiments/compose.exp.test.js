@@ -75,7 +75,7 @@ describe('Thinking Experiment: Middleware', () => {
         }
         a(b('c'));
     })
-    it('', () => {
+    it.skip('', () => {
         const action = [];
         const dispatch = (action) => {
             action.push('[middlewareA] stack is open');

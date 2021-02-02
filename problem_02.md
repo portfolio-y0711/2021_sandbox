@@ -1,4 +1,4 @@
-## middleware 연쇄는 어떻게 일어나는가
+## 브라우저 캐싱(pouchdb) + 문서 기반 동기화 데이터베이스(couchdb)로 PWA 구현하기 
 
 > applyMiddleware의 인자로 배치될 middleware 들이 실제로 어떻게 작동하는지 알아보고자 한다. 
 
@@ -11,13 +11,13 @@
 
 <br/>
 
-🙉 이 **_문제_** 를 이해하면 :   
+🙉 이 **_문제_** 를 해결하면 :   
 
-* middleware의 배치 순서에 따라 애플리케이션의 동작이 어떻게 달라지는지 예측할 수 있다. 
+<!-- * 프론트 엔드 개발시 백엔드 rest api 
 
-* 응답성을 최대화 하기 위해 middlware 블록 내부의 next(action) 문 호출이 언제 발생해야 하는지를 결정할 수 있다. 
+* 브라우저 캐싱 + amqp 큐 서버를 통한 동기화로 발전시킬 수 있다. 
 
-* 비동기 요청을 처리하는 middleware를 선순서로 배치할지, 후선서로 배치할 지 결정할 수 있다. 
+* 이벤트 소싱(Event Sourcing) 구현에 한 발자국 좀더 가까이 다가갈 수 있지 않을까... -->
 
 </details>
 
@@ -36,21 +36,15 @@
 
 🐣 이 **_문제_** 를 탐구해보니 :   
 
-* middleware 연쇄는 **_합성 함수(compose)_** 와 **_앞으로 차기(CPS)_** 로 작동한다. 
 
-* middleware 호출 스택은 applyMiddleware 인자의 순서대로  **_좌에서 우로_** 열린다. 
+* CacheMiddleware와 HttpMiddleware를 통합하여 AsyncMiddleware로 추상화가 가능하다.
 
-* 일반적인 middleware의 경우:
+* 싱글턴이 아닌 객체 내부에 싱글턴 객체를 생성하는 방법이 합리적이라 생각됩니다. 
 
-    *  **_비동기 처리 미들웨어 앞단에_** 배치하는 것이 안전하다. 
+* pouchdb CRD api는 여타 문서 기반 NoSql 서버와 마찬가지로 매우 사용이 쉬웠습니다. 
 
-    *  next(action)은 각 분기 문의 반환 시점에 호출하는 것이 안전하다. 
+* pouchdb에서 직접 운영하는 docker 공식 repository는 아니지만 ...()
 
-* 비동기 요청을 동기화 하는 middleware의 경우:
-
-  *  **_가장 마지막에 배치_** 하는 것이 안전하다. 
-
-  *  next(action)을 블록문의 **_가장 상단에 위치_** 시키는 것이 안전하다. 
 
 <br/>
 
@@ -69,7 +63,7 @@
 
 <!-- #region 3-1 redux 라이브러리 구현체 및 테스트 코드 작성하기 -->
 
-#### 3-1. redux 라이브러리 구현체 및 테스트 코드 작성하기 
+#### 3-1. cacheMiddleware와 httpMiddleware의 공통점과 차이점 살펴보기
 
 <details>
 <summary>...(닫기)</summary>
@@ -136,9 +130,9 @@ redux lightweight: [바로가기](https://github.com/heiskr/prezzy-redux-scratch
 <!-- #endregion 3-1 -->
 
 
-<!-- #region 3-2 redux 합성 함수 (compose function) 살펴보기 -->
+<!-- #region 3-2 싱글턴 Cache-DB 의존성 주입하기  -->
 
-#### 3-2. redux 합성 함수 (compose function) 살펴보기 
+#### 3-2. 싱글턴 Cache-DB 의존성 주입하기 
 
 <details>
 <summary>...(닫기)</summary>
@@ -177,9 +171,9 @@ module.exports = (...funcs) => {
 <!-- #endregion 3-2 -->
 
 
-<!-- #region 3-3 redux 앞으로 차기 (continuation pass style) 살펴보기 -->
+<!-- #region 3-3 Pouchdb Create/Read/Delete 테스트 코드 작성해보기 -->
 
-#### 3-3. redux 앞으로 차기 (continuation pass style) 살펴보기 
+#### 3-3. Pouchdb Create/Read/Delete 테스트 코드 작성해보기
 
 <details open>
 <summary>...(닫기)</summary>
@@ -235,9 +229,9 @@ const logMiddleware = (store) => (next) => (action) => {
 <!-- #endregion 3-3 -->
 
 
-<!-- #region 3-4 middleware 호출 스택이 열리는 순서 -->
+<!-- #region 3-4 Couchdb를 도커 컨테이너로 배포하기 -->
 
-#### 3-4. middleware 호출 스택이 열리는 순서
+#### 3-4. Couchdb를 도커 컨테이너로 배포하기
 
 > middleware의 chain 호출은 dispatch 함수 호출로 부터 시작됩니다. 아래 테스트 코드에서는 store 객체의   
 > 내부 코드에서 middleware의 연쇄 호출과 무관한 처리를 하는 부분은 과감히 덜어내고 stubStore를 구현하였습니다  
