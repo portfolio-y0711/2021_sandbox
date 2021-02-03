@@ -14,5 +14,6 @@ module.exports = {
       "<rootDir>/__tests__/fixtures/$1",
     ]
   },
-  verbose: true
+  verbose: false,
+  setupFilesAfterEnv: ["jest-extended"]
 };

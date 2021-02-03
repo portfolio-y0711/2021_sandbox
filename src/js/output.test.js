@@ -1,12 +1,12 @@
 
 describe('Output Module', () => {
     let output;
-    let stub_mediator;
+    let stub_store;
 
     beforeEach(() => {
         document.documentElement.innerHTML = require('#tests/html');
-        stub_mediator = ({ deleteTodoItem: () => {} });
-        output = require('./output')(document, stub_mediator);
+        stub_store = ({ dispatch: () => {}, subscribe: () => {} });
+        output = require('./output')(document, stub_store);
     });
 
     it('should set its todoList prop as #todo-list', () => {
@@ -52,7 +52,7 @@ describe('Output Module', () => {
             name: 'this is for test3'
         }];
         output.updateDisplay(todoItems);
-        const spyFn = jest.spyOn(stub_mediator, 'deleteTodoItem');
+        const spyFn = jest.spyOn(stub_store, 'dispatch');
         document.querySelector('li button').dispatchEvent(new Event('click'));
         expect(spyFn).toHaveBeenCalledTimes(1);
     });
@@ -64,8 +64,8 @@ describe('Output Module', () => {
             name: 'this is for test4'
         }];
         output.updateDisplay(todoItems);
-        const spyFn = jest.spyOn(stub_mediator, 'deleteTodoItem');
+        const spyFn = jest.spyOn(stub_store, 'dispatch');
         document.querySelector('li button').dispatchEvent(new Event('click'));
-        expect(spyFn).toHaveBeenCalledWith('#ABC');
+        expect(spyFn.mock.calls[0][0].document).toEqual('#ABC');
     });
 });

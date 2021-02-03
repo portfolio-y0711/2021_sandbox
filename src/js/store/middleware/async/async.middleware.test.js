@@ -1,9 +1,9 @@
 const { CCH_DB_FETCH, CCH_DB_CREATE, CCH_DB_DELETE, ASY_DOCS_TODOITEMS, ASY_SEED_RESOLVED, ASY_CREATE_RESOLVED, ASY_DELETE_RESOLVED, CCH_DB_SEED } = require('../../vo');
-const { AsyncMiddleware } = require('./async.middleware');
 const { logCreator: _ } = require('../log/log.util');
 
 describe('Middleware: async', () => {
     const { createStoreForMiddlewareTest } = require('#tests/middleware');
+    const { AsyncMiddleware } = require('./async.middleware');
 
     it(`dispatches '${_(ASY_CREATE_RESOLVED)}' on AsyncActionCommand '${_(CCH_DB_CREATE)}'`, async() => {
        let actual;

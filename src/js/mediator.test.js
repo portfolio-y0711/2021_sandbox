@@ -1,32 +1,18 @@
-const fs = require('fs')
-const path = require('path')
-const html = fs.readFileSync(path.resolve(__dirname, '../html/index.html'), 'utf8')
+const { APP_CACHE_SEED, APP_CACHE_SYNC } = require('./store/vo');
+const { logCreator: _ } = require('./store/middleware/log/log.util');
 
-describe('Main', () => {
-    beforeEach(() => {
-        document.documentElement.innerHTML = html.toString()
+describe('mediator', () => {
+    const mediator = require('./mediator');
+
+    it(`it firstly  dispatches ${_(APP_CACHE_SEED)} on load`, () => {
+        let actual = [];
+        mediator({}, () => {}, () => {}, { dispatch : (action) => { actual.push(action) } });
+        expect(actual[0]).toEqual(APP_CACHE_SEED);
     })
 
-    it('it', () => {
-        // const db = ({
-        //     addItem: () => { console.log('addItem called') },
-        //     removeItem: () => { console.log('removeItem called') }
-        // })
-        // const e = ({
-        //     target: {
-        //         parentNode: {
-        //             reset: () => {}
-        //         }
-        //     }
-        // })
-        // const main = require('./main')(document)
-        // const list = document.querySelector('#task-list')
-        // main.createFormSubmitButton(
-        //     require('./form'), 
-        //     require('./out'), 
-        //     list, 
-        //     require('./db'))
-        // const formSubmitButton = document.querySelector('#add-button')
-        // formSubmitButton.dispatchEvent(new Event('click'))
+    it(`it secondly dispatches ${_(APP_CACHE_SYNC)} on load`, () => {
+        let actual = [];
+        mediator({}, () => {}, () => {}, { dispatch : (action) => { actual.push(action) } });
+        expect(actual[1]).toEqual(APP_CACHE_SYNC);
     })
 })

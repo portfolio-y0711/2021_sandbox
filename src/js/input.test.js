@@ -1,17 +1,17 @@
-const fs = require('fs')
-const path = require('path')
-const html = fs.readFileSync(path.resolve(__dirname, '../html/index.html'), 'utf8')
+const fs = require('fs');
+const path = require('path');
+const html = fs.readFileSync(path.resolve(__dirname, '../html/index.html'), 'utf8');
 
 describe('Input Module', () => {
     let input;
-    let stub_mediator;
+    let stub_store;
 
     beforeEach(() => {
         document.documentElement.innerHTML = html.toString();
-        stub_mediator = ({
-            createTodoItem: () => {}
+        stub_store = ({
+            dispatch: () => {}
         });
-        input = require('./input')(document, stub_mediator);
+        input = require('./input')(document, stub_store);
         spyOn(console, 'error');
     })
 
@@ -55,19 +55,20 @@ describe('Input Module', () => {
 
     it('should add click listener to #add-button to invoke mediator.createTodoItem', () => {
         document.getElementById('todo-title').value = 'any';
-        const spyFn = jest.spyOn(stub_mediator, 'createTodoItem');
+        const spyFn = jest.spyOn(stub_store, 'dispatch');
         input.addButton.dispatchEvent(new Event('click'));
         expect(spyFn).toBeCalledTimes(1);
     })
 
     it('should add click listener to #add-button to invoke mediator.createTodoItem with todoItem', () => {
         document.getElementById('todo-title').value = 'any';
-        const spyFn = jest.spyOn(stub_mediator, 'createTodoItem');
+        const spyFn = jest.spyOn(stub_store, 'dispatch');
         input.addButton.dispatchEvent(new Event('click'));
-        expect(spyFn).toBeCalledWith({
+        const expected = {
             date: new Date().toISOString().split('T')[0],
             name: 'any'
-        });
+        };
+        expect(spyFn.mock.calls[0][0].document).toContainValues([expected.date, expected.name]);
     })
 
     it('should clear text of #todo-title after #add-button clicked', () => {

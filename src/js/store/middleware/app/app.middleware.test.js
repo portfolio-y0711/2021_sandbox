@@ -3,10 +3,10 @@ const { logCreator: _ } = require('../log/log.util');
 
 describe('Middleware: app', () => {
     const { createStoreForMiddlewareTest }  = require('#tests/middleware')
+    const { AppMiddleware } = require('./app.middleware');
 
     it(`dispatches "${_(APP_CACHE_FETCH)}" on ActionEvent with    "${_(MOD_OUTPUT_LOADED)}"`, () => {
         let actual;
-        const { AppMiddleware } = require('./app.middleware');
         const store = createStoreForMiddlewareTest([AppMiddleware((action) => { actual = action })]);
         store.dispatch(MOD_OUTPUT_LOADED);
         expect(actual).toEqual(APP_CACHE_FETCH);
@@ -14,7 +14,6 @@ describe('Middleware: app', () => {
 
     it(`dispatches "${_(APP_CACHE_CREATE)}" on ActionDocument with "${_(MOD_TODO_CREATE)}"`, () => {
         let actual;
-        const { AppMiddleware } = require('./app.middleware');
         const store = createStoreForMiddlewareTest([AppMiddleware((action) => { actual = action })]);
         store.dispatch(MOD_TODO_CREATE);
         expect(actual).toEqual(APP_CACHE_CREATE);
@@ -22,7 +21,6 @@ describe('Middleware: app', () => {
 
     it(`dispatches "${_(APP_CACHE_DELETE)}" on ActionDocument with "${_(MOD_TODO_DELETE)}"`, () => {
         let actual;
-        const { AppMiddleware } = require('./app.middleware');
         const store = createStoreForMiddlewareTest([AppMiddleware((action) => { actual = action })]);
         store.dispatch(MOD_TODO_DELETE);
         expect(actual).toEqual(APP_CACHE_DELETE);

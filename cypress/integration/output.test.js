@@ -6,16 +6,26 @@ describe('List items ', () => {
     })
 
     it('can remove a Todo', () => {
+        const itemText = 'this is typed by cypress-io'
+        cy.get('#todo-title')
+            .type(itemText)
+            .type('{enter}')
+            .should('have.value', '');
+
         cy.get('#todo-list li')
-            .as('list')
+            .as('list');
 
         cy.get('@list')
-            .first()
             .find('button')
-            .click()
+            .as('button');
+        
+        cy.get('@button').then(($el) => {
+            const el = $el.get(0);
+            el.dispatchEvent(new Event('click'));
+        })
 
         cy.get('@list')
-            .should('have.length', 1)
+            .should('have.length', 0);
     })
 
 })

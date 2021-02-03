@@ -1,146 +1,103 @@
-const { SENDER_TYPE, COMMAND_TYPE, DOC_TYPE, MESSAGE_TYPE, SUBJECT_TYPE, APP_CACHE_FETCH, CCH_DB_AWAIT } = require('../../vo');
-const { ActionCommand, ActionDocument, ActionEvent } = require('../../entity');
+const { APP_CACHE_SEED, APP_CACHE_SYNC, APP_CACHE_FETCH, APP_CACHE_CREATE, APP_CACHE_DELETE, CCH_DB_SYNC, CCH_DB_SEED, CCH_DB_FETCH, CCH_DB_CREATE, CCH_DB_DELETE } = require('../../vo');
+const { logCreator: _ } = require('../log/log.util');
+const { ActionDocument, ActionEvent } = require('../../entity');
 
 describe('Middleware Module: cacheMiddleware', () => {
-    let { CacheMiddleware } = require('./cache.middleware')
-    const { logCreator: _ } = require('../log/log.util');
-    let { createStoreForMiddlewareTest } = require('#tests/middleware');
+    const { createStoreForMiddlewareTest } = require('#tests/middleware');
+    const { CacheMiddleware } = require('./cache.middleware')
 
-    it(`does not catch any ActionEvent dispatch `, async () => {
+    it(`does not catch any ActionEvent`, async () => {
         let actual;
-        const middlewares = [CacheMiddleware({ 
-            promiseOf: (action) => {
-                actual = action;
-            }
-        })];
+        const middlewares = [CacheMiddleware((action) => actual = action)];
         const store = createStoreForMiddlewareTest(middlewares);
         store.dispatch(new ActionEvent('', '', ''));
-        expect(actual).toEqual();
+        expect(actual).toEqual(undefined);
     })
 
-    it(`does not catch any ActionDocument dispatch `, async () => {
+    it(`does not catch any ActionDocument`, async () => {
         let actual;
         const middlewares = [CacheMiddleware({ 
-            promiseOf: (action) => {
-                actual = action;
-            }
+            promiseOf: (action) => { actual = action; }
         })];
         const store = createStoreForMiddlewareTest(middlewares);
         store.dispatch(new ActionDocument('', '', ''));
         expect(actual).toEqual();
     })
 
-    it(`catch any ActionCommand dispatch `, () => {
-        const spyFn = jest.spyOn({ dispatch: () => {}}, 'dispatch');
-        const middlewares = [CacheMiddleware({ readAllItems: () => new Promise(res=>res) }, spyFn)];
+    it(`dispatches '${_(CCH_DB_SEED)}' on ActionCommand '${_(APP_CACHE_SEED)}'`, () => {
+        let actual;
+        const middlewares = [CacheMiddleware({ seedItems: () => new Promise(res=>res) }, (action) => { actual = action } )];
         const store = createStoreForMiddlewareTest(middlewares);
-        store.dispatch(APP_CACHE_FETCH);
-        expect(spyFn).toHaveBeenCalledTimes(1);
+        store.dispatch(APP_CACHE_SEED);
+        expect(actual).toEqual(CCH_DB_SEED);
     })
 
-    it(`dispatch promise on catching ActionCommand dispatch tagged as "${_(APP_CACHE_FETCH)}"`, async () => {
-        const spyFn = jest.spyOn({ dispatch: () => {}}, 'dispatch');
-        const middlewares = [CacheMiddleware({ readAllItems: () => new Promise(res=>res) }, spyFn)];
+
+    it(`dispatches '${_(CCH_DB_SYNC)}' on ActionCommand '${_(APP_CACHE_SYNC)}'`, () => {
+        let actual;
+        const middlewares = [CacheMiddleware({}, (action) => { actual = action } )];
         const store = createStoreForMiddlewareTest(middlewares);
-        store.dispatch(APP_CACHE_FETCH);
-        expect(spyFn).toHaveBeenCalledWith(CCH_DB_AWAIT);
+        store.dispatch(APP_CACHE_SYNC);
+        expect(actual).toEqual(CCH_DB_SYNC);
     })
 
-    // it.skip(`catch any dispatch tagged as "${APP__INIT}"`, async () => {
-    //     const spyFn = jest.fn();
-    //     const middlewares = [require('./middleware.cache')({ db, spy1: spyFn, spy2: () => {}, spy3: () => {}})];
-    //     const store = createStoreForTest(middlewares);
-    //     store.dispatch({
-    //         type: APP__INIT, 
-    //         payload: [
-    //             {
-    //                 id: '23f%',
-    //                 name: 'this is seed from cache test',
-    //                 date: '2021-02-24',
-    //             },
-    //             {
-    //                 id: '#fr4',
-    //                 name: 'this is seed from cache test',
-    //                 date: '2021-01-22',
-    //             },
-    //         ]
-    //     });
-    //     await new Promise(res => setTimeout(res, 100));
-    //     expect(spyFn).toHaveBeenCalledTimes(1);
-    // })
+    it(`dispatches '${_(CCH_DB_FETCH)}' on ActionCommand '${_(APP_CACHE_FETCH)}'`, () => {
+        let actual;
+        const middlewares = [CacheMiddleware({ readAllItems: () => new Promise(res=>res) }, (action) => { actual = action } )];
+        const store = createStoreForMiddlewareTest(middlewares);
+        store.dispatch(APP_CACHE_FETCH);
+        expect(actual).toEqual(CCH_DB_FETCH);
+    })
 
+    it(`dispatches '${_(CCH_DB_CREATE)}' on ActionCommand '${_(APP_CACHE_CREATE)}'`, () => {
+        let actual;
+        const middlewares = [CacheMiddleware({ createItem: () => new Promise(res=>res) }, (action) => { actual = action } )];
+        const store = createStoreForMiddlewareTest(middlewares);
+        store.dispatch(APP_CACHE_CREATE);
+        expect(actual).toEqual(CCH_DB_CREATE);
+    })
 
-    // it.skip(`catch any dispatch tagged as "${APP__INIT}"`, async () => {
-    //     const spyFn = jest.fn();
-    //     const middlewares = [require('./middleware.cache')({ db, spy1: spyFn, spy2: () => {}, spy3: () => {}})];
-    //     const store = createStoreForTest(middlewares);
-    //     store.dispatch({type: APP__INIT});
-    //     await new Promise(res => setTimeout(res, 1));
-    //     expect(spyFn).toHaveBeenCalledTimes(1);
-    // })
+    it(`dispatches '${_(CCH_DB_DELETE)}' on ActionCommand '${_(APP_CACHE_DELETE)}'`, () => {
+        let actual;
+        const middlewares = [CacheMiddleware({ deleteItem: () => new Promise(res=>res) }, (action) => { actual = action } )];
+        const store = createStoreForMiddlewareTest(middlewares);
+        store.dispatch(APP_CACHE_DELETE);
+        expect(actual).toEqual(CCH_DB_DELETE);
+    })
 
-    // it.skip(`catch any dispatch tagged as "${APP__CACHE_REQUEST}" with meta info ${META.READ}`, () => {
-    //     const spyFn = jest.fn();
-    //     const middlewares = [require('./middleware.cache')({ db, spy1: spyFn, spy2: () => {}, spy3: () => {}})];
-    //     const store = createStoreForTest(middlewares);
-    //     store.dispatch({type: APP__CACHE_REQUEST , payload: new Promise(res => { res('aaa') }), meta: { requestType: 'READ' }});
-    //     store.dispatch({type: APP__CACHE_REQUEST , payload: new Promise(res => { res('bbb') }), meta: { requestType: 'READ' }});
-    //     store.dispatch({type: APP__CACHE_REQUEST , payload: new Promise(res => { res('ccc') }), meta: { requestType: 'READ' }});
-    //     expect(spyFn).toHaveBeenCalledTimes(3);
-    // })
+    it(`dispatches '${_(CCH_DB_SEED)}' with promise on AsyncActionCommand '${_(APP_CACHE_SEED)}'`, async() => {
+        let actual;
+        const expected = 'resolved message';
+        const middlewares = [CacheMiddleware({ seedItems: () => new Promise(res=>res(expected)) }, (action) => { actual = action} )];
+        const store = createStoreForMiddlewareTest(middlewares);
+        store.dispatch(APP_CACHE_SEED);
+        expect(await actual.promise).toEqual(expected);
+    })
 
-    // it.skip(`catch any dispatch tagged as "${APP__CACHE_REQUEST}" with meta info ${META.READ} and fetch itemTodos from cache on `, async() => {
-    //     const spyFn = jest.spyOn({ dispatch: (newAction) => {} }, 'dispatch');
-    //     const middlewares = [require('./middleware.cache')({ db, spy1: () => {}, spy2: spyFn, spy3: () => {} })];
-    //     const store = createStoreForTest(middlewares);
-    //     db.createItem({
-    //         id: '3BX%',
-    //         name: 'this is from cache middleware test 1'
-    //     });
-    //     await store.dispatch({type: APP__CACHE_REQUEST , payload: new Promise(res => { res('aaa') }), meta: { requestType: META.READ }});
-    //     await new Promise(res => setTimeout(res, 0));
-    //     expect(spyFn).toHaveBeenCalledWith({ 
-    //         payload: [{
-    //             id: '3BX%',
-    //             name: 'this is from cache middleware test 1'
-    //         }], 
-    //         type: `${CAC__CACHE_RESPONSE} ${META.READ}: ${META.SUCCESS}`,
-    //         meta: { 
-    //             requestType: META.READ,
-    //             resultType: META.SUCCESS, 
-    //         }
-    //     });
-    // })
+    it(`dispatches '${_(CCH_DB_FETCH)}' with promise on AsyncActionCommand '${_(APP_CACHE_FETCH)}'`, async() => {
+        let actual;
+        const expected = 'resolved message';
+        const middlewares = [CacheMiddleware({ readAllItems: () => new Promise(res=>res(expected)) }, (action) => { actual = action} )];
+        const store = createStoreForMiddlewareTest(middlewares);
+        store.dispatch(APP_CACHE_FETCH);
+        expect(await actual.promise).toEqual(expected);
+    })
 
+    it(`dispatches '${_(CCH_DB_CREATE)}' with promise on AsyncActionCommand '${_(APP_CACHE_CREATE)}'`, async() => {
+        let actual;
+        const expected = 'resolved message';
+        const middlewares = [CacheMiddleware({ createItem: () => new Promise(res=>res(expected)) }, (action) => { actual = action} )];
+        const store = createStoreForMiddlewareTest(middlewares);
+        store.dispatch(APP_CACHE_CREATE);
+        expect(await actual.promise).toEqual(expected);
+    })
 
-    // it.skip(`catch any dispatch tagged as "${APP__CACHE_REQUEST}" with meta info DELETE`, () => {
-    //     let spyFn = jest.fn();
-    //     const middlewares = [require('./middleware.cache')({ db, spy1: spyFn, spy2: () => {}, spy3: () => {}})];
-    //     const store = createStoreForTest(middlewares);
-    //     store.dispatch({type: APP__CACHE_REQUEST, payload: new Promise(res => { res('aaa') }), meta: { requestType: 'DELETE' }});
-    //     store.dispatch({type: APP__CACHE_REQUEST, payload: new Promise(res => { res('bbb') }), meta: { requestType: 'DELETE' }});
-    //     store.dispatch({type: APP__CACHE_REQUEST, payload: new Promise(res => { res('ccc') }), meta: { requestType: 'DELETE' }});
-    //     expect(spyFn).toHaveBeenCalledTimes(3);
-    // })
-
-    // it.skip(`catch any dispatch tagged as "${APP__CACHE_REQUEST}" with meta info CREATE`, () => {
-    //     let spyFn = jest.fn();
-    //     const middlewares = [require('./middleware.cache')({ db, spy1: spyFn, spy2: () => {}, spy3: () => {}})];
-    //     const store = createStoreForTest(middlewares);
-    //     store.dispatch({type: APP__CACHE_REQUEST, payload: new Promise(res => { res('aaa') }), meta: { requestType: 'CREATE' }});
-    //     store.dispatch({type: APP__CACHE_REQUEST, payload: new Promise(res => { res('bbb') }), meta: { requestType: 'CREATE' }});
-    //     store.dispatch({type: APP__CACHE_REQUEST, payload: new Promise(res => { res('ccc') }), meta: { requestType: 'CREATE' }});
-    //     expect(spyFn).toHaveBeenCalledTimes(3);
-    // })
-
-    // it.skip(`skip any dispatch without a tagged with "${APP__CACHE_REQUEST}"`, async() => {
-    //     const spyFn = jest.spyOn({ dispatch: (newAction) => {} }, 'dispatch');
-    //     createStoreForTest = require('#tests/middleware');
-    //     const middlewares = [require('./middleware.cache')({ db, spy1: () => {}, spy2: () => {}, spy3: spyFn })];
-    //     const store = createStoreForTest(middlewares);
-    //     store.dispatch({type: 'this is not CACHE request', payload: new Promise(res => { res('aaa') })});
-    //     await new Promise(res => setTimeout(res, 0));
-    //     expect(spyFn).toHaveBeenCalledTimes(1);
-    // })
-
+    it(`dispatches '${_(CCH_DB_DELETE)}' with promise on AsyncActionCommand '${_(APP_CACHE_DELETE)}'`, async() => {
+        let actual;
+        const expected = 'resolved message';
+        const middlewares = [CacheMiddleware({ deleteItem: () => new Promise(res=>res(expected)) }, (action) => { actual = action} )];
+        const store = createStoreForMiddlewareTest(middlewares);
+        store.dispatch(APP_CACHE_DELETE);
+        expect(await actual.promise).toEqual(expected);
+    })
 })

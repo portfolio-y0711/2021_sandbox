@@ -15,12 +15,14 @@ describe('Input form', () => {
     context('Form submission', () => {
         it('Add a new todo on click add-button', () => {
             const itemText = 'this is typed by cypress-io'
+
             cy.get('#todo-title')
                 .type(itemText)
                 .type('{enter}')
                 .should('have.value', '')
+
             cy.get('#todo-list li')
-                .should('have.length', 3)
+                .should('have.length', 1)
                 .and('contain', itemText)
         })
     })

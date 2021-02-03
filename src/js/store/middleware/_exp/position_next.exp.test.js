@@ -13,7 +13,7 @@ describe('Middleware: internals', () => {
     })
 
 
-    it.skip('unsafe recursive call in middlewares', () => {
+    it('unsafe recursive call in middlewares', () => {
         const middlewares = [
             (store) => (next) => (action) => {
                 action.A_call_count = action.A_call_count + 1;
@@ -43,7 +43,7 @@ describe('Middleware: internals', () => {
             B_call_count: 0
         };
         dispatch(action);
-        console.log(action);
+        expect(action).toEqual({ val: 100, A_call_count: 101, B_call_count: 101 });
     })
 
     it.skip('unsafe recursive call in middlewares', () => {
@@ -76,8 +76,7 @@ describe('Middleware: internals', () => {
             B_call_count: 0
         };
         store.dispatch(action);
-        console.log(action);
-        // { val: 100, A_call_count: 101, B_call_count: 101 }
+        expect(action).toEqual({ val: 100, A_call_count: 101, B_call_count: 101 })
     })
 
     it.skip('sync blocking scenario', async () => {
@@ -191,12 +190,5 @@ describe('Middleware: internals', () => {
         });
         dispatch(action);
         console.log(action);
-    });
-
-    it('test', () => {
-        var middlewareAPI = {
-            dispatch: (action) => dispatch(action)
-        }
-        console.log(middlewareAPI.dispatch(1));
     });
 })

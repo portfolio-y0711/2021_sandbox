@@ -1,8 +1,4 @@
-const {
-   APP__UI_UPDATE, 
-} = require('../../vo');
-
-const UiMiddleware = ({ output, spy1, spy2 }) => (store) => (next) => (action) => {
+const UiMiddleware = (output, dispatch) => (store) => (next) => (action) => {
     next(action);
 }
 

@@ -2,12 +2,10 @@ doctype html
 html(lang='pl')
   head
     meta(charset='utf-8')
-    title <%= htmlWebpackPlugin.options.title %>
+    title Todo List 
     link(rel='stylesheet' href='./style.css')
 
   body
-    header#main-header.main-header
-      h1 Todo List
 
     form#todo-form.todo-form
       label(for='todo-date') Date
@@ -18,5 +16,5 @@ html(lang='pl')
 
     ul#todo-list.todo-list
 
-    script(src='../node_modules/devtools-detect/index.js')
-    script(src='../dist/bundle.js')
+    script(src='./third-party/devtools-detect.js')
+    script(src='./bundle.js')

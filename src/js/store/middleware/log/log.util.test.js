@@ -12,7 +12,7 @@ describe('log Middleware: util', () => {
             MESSAGE_TYPE.LOADED,
         );
         actionLogger(action);
-        expect(actual).toEqual("[APP] INPUT   'LOADED'");
+        expect(actual).toEqual("[APP] INPUT    |LOADED |");
     })
 
     it('create log for ActionCommand', () => {
@@ -24,7 +24,7 @@ describe('log Middleware: util', () => {
             COMMAND_TYPE.FETCH,
         );
         actionLogger(action);
-        expect(actual).toEqual("[APP] CACHE   'FETCH'");
+        expect(actual).toEqual("[APP] CACHE    |FETCH  |");
     })
 
     it('create log for ActionDocument', () => {
@@ -36,6 +36,6 @@ describe('log Middleware: util', () => {
             DOC_TYPE.TODO_ITEMS,
         );
         actionLogger(action);
-        expect(actual).toEqual("[CCH] DOCS    'TODO_ITEMS'");
+        expect(actual).toEqual("[CCH] DOCS     |TODOS  |");
     })
 })

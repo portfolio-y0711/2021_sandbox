@@ -9,12 +9,12 @@ const CacheMiddleware = (db, dispatch) => (store) => (next) => (action) => {
   dispatch ? (store.dispatch = dispatch) : null;
 
   switch(action) {
+    case APP_CACHE_SEED:
+      CCH_DB_SEED.promise = db.seedItems([]);
+      store.dispatch(CCH_DB_SEED);
+      return;
     case APP_CACHE_SYNC:
       store.dispatch(CCH_DB_SYNC);
-      return;
-    case APP_CACHE_SEED:
-      CCH_DB_SEED.promise = db.seedItems();
-      store.dispatch(CCH_DB_SEED);
       return;
     case APP_CACHE_FETCH:
       CCH_DB_FETCH.promise = db.readAllItems();
@@ -29,17 +29,6 @@ const CacheMiddleware = (db, dispatch) => (store) => (next) => (action) => {
       store.dispatch(CCH_DB_DELETE);
       return;
   }
-
-  // console.log(db);
-  
-  // switch(action.type) {
-  //   case APP__INIT: 
-  //     await db.subscribeCache();
-  //     if (action.hasOwnProperty('payload')) {
-  //       await db.seedItems(action.payload);
-  //       spy2(action.payload);
-  //     }
-  //     return
 };
 
 module.exports = {

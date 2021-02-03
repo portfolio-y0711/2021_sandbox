@@ -1,34 +1,27 @@
 
 describe('Middleware: internals', () => {
-    let createStoreForTest;
+    const { createStoreForMiddlewareTest } = require('#tests/middleware');
 
-    beforeAll(() => {
-        createStoreForTest = require('#tests/middleware');
-    })
-
-    it.skip(`(1) right to left processing order`, async() => {
+    it(`(1) right to left processing order`, async() => {
         let actual = [];
         const middlewares = [
             (store) => (next) => async(action) => {
                 next(action);
                 actual.push(1);
-                console.log('ah1');
                 return
             },
             (store) => (next) => async(action) => {
                 next(action);
                 actual.push(2);
-                console.log('ah2');
                 return
             },
             (store) => (next) => async(action) => {
                 next(action);
                 actual.push(3);
-                console.log('ah3');
                 return
             },
         ];
-        const store = createStoreForTest(middlewares);
+        const store = createStoreForMiddlewareTest(middlewares);
         store.dispatch({
             type: 'test',
         })

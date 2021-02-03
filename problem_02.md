@@ -1,4 +1,4 @@
-## 브라우저 캐싱(pouchdb) + 원격 데이터베이스(couchdb)로 PWA 구현하기 
+## 브라우저 캐싱 + 원격 데이터베이스로 PWA 구현하기 
 
 <font size="3" color="red">
 
@@ -6,7 +6,32 @@
 
 </font>
 
-> applyMiddleware의 인자로 배치될 middleware 들이 실제로 어떻게 작동하는지 알아보고자 한다. 
+> 샌드박스 v1.0.0에서는 pouchdb와 couchdb를 이용하여 PWA를 구현하였습니다.   
+> 브라우저 캐싱 + 원격 데이터베이스 동기화를 경량으로 직접 구현하는 것은 가능한지   
+> 여부를 따져볼 예정이나, 그 보다 중요한 토픽인 '원격 데이터베이스의 인증전략    
+> 문제를 먼저 탐구'한 뒤에 샌드박스 프로젝트 v2.0.0에 추가 여부를 결정할 예정입니다. 
+
+<br/>
+
+<font color="purple"><span style="font-weight:bold">
+
+목차 
+
+</span></font>
+
+1. [문제 해결의 기대효과](###-1.-문제-해결의-기대효과-(expected-effect-of-problem-solving))
+
+2. [(잠정적인) 결론](###-2.-잠정적인-결론-(tentative-conclusions))
+
+3. [탐구 과정](###-3.-탐구-과정-(exploration-process))  
+
+    3..1 [cache-DB 연결 객체는 언제 생성하고 어떻게 관리하나](####-3-1.-cache-DB-연결-객체는-언제-생성하고-어떻게-관리하나)
+
+    3..2 [cache-DB 테스트 코드 작성하기](####-3-2.-cache-DB-테스트-코드-작성하기)
+
+4. [다음 샌드박스 프로젝트에서 도전해 볼 과제들]()  
+
+<br/>
 
 <!-- #region 1 문제 해결의 기대효과 (expected effect of problem solving) -->
 
@@ -34,7 +59,7 @@
 
 <!-- #region 2 잠정적 결론들 (tentative conclusions) -->
 
-### 2. 잠정적 결론들 (tentative conclusions)
+### 2. (잠정적인) 결론 (tentative conclusions)
 
 <details open>
 <summary>...(닫기)</summary>
@@ -44,14 +69,13 @@
 🐣 이 **_문제_** 를 탐구해보니 :   
 
 
-* 브라우저 캐시는 
+* 브라우저 cache 데이터베이스에 연결하는 접근하는 conn 객체는 
 
-* 싱글턴이 아닌 객체 내부에 싱글턴 객체를 생성하는 방법이 합리적이라 생각됩니다. 
+    * 테스트나 다중 접속등을 고려할 때 dao 객체 내부에 싱글턴 객체로 생성하는 방법이 합리적이라 생각했습니다. 
 
-* pouchdb CRD api는 여타 문서 기반 NoSql 서버와 마찬가지로  RDBMS에 비해 사용이 직관적고 간편했습니다. 
+* pouchdb는 여타 문서 기반 NoSql 서버와 마찬가지로 RDBMS에 비해 사용이 직관적이고 간편했습니다. 
 
-* pouchdb에서 직접 운영하는 docker 공식 repository는 아니지만 ...()
-
+    * 캐시 브라우저이지만 테스트 시에도 일반 데이터베이스와 비슷한 방식으로 테스트 의존성 주입이 가능합니다. 
 
 <br/>
 
@@ -70,46 +94,32 @@
 
 <!-- #region 3-1 redux 라이브러리 구현체 및 테스트 코드 작성하기 -->
 
-#### 3-1. cacheMiddleware와 httpMiddleware의 공통점과 차이점 살펴보기
+#### 3-1. cacheDB 연결 객체는 언제 생성하고 어떻게 관리하나
 
-<details>
+<details open>
 <summary>...(닫기)</summary>
 
 <br/>
 
-> 해외 세미나 컨퍼런스를 시청하는 중에 redux 라이브러리가 1,000 라인 남짓 밖에 안된다는 사실을 알게 되었고,  
-> middleware의 동작이 궁금해진 즈음에 create own redux라는 키워드로 작은 git repo를 찾아보게 되었습니다.  
-> 처음에는 구현체에 compose 함수가 포함되어 있지 않았고 applyMiddleware도 한 개의 middleware만 처리하는  
-> 코드라 매우 아쉽다는 생각이 들었습니다. 
 >
-> 하지만 실망하지 않고 redux 라이브러리를 살펴보니 compose 함수가 생각보다 간단하다는 사실을 확인할 수 있었고   
-> apply middleware 또한 복잡하지 않아 해당 코드(typescript)를 javascript로 옮기는 것이 가능해 보였습니다. 
 >
-
+>
 
 
 
 <br/>
 
-🔎 구현 코드 
-
-<!-- **_⌘ 프로젝트 구현체_**   -->
+<font size="3">⌘</font> 작성한 코드 
 
 **_● compose_**: [`src/js/store/_lib/compose.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
 **_● createStore_**: [`src/js/store/_lib/createStore.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-**_● applyMiddleware_**: [`src/js/store/_lib/applyMiddleware.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-**_● middleware_**: [`src/js/store/middleware/log/middleware.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-**_● bindAction_**: [`src/js/store/_lib/bindAction.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
 
 <br/>
 
-🔔 테스트 코드 
+<font size="3">⌘</font> 테스트 코드
 
 **_● compose_**: [`src/js/store/_lib/compose.test.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
 **_● createStore_**: [`src/js/store/_lib/createStore.test.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-**_● applyMiddleware_**: [`src/js/store/_lib/applyMiddleware.test.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-**_● middleware_**: [`src/js/store/middleware/log/middleware..testjs`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-**_● bindAction_**: [`src/js/store/_lib/bindAction.test.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
 
 <br/>
 
@@ -120,9 +130,9 @@
 
 <!-- #region 3-2 싱글턴 Cache-DB 의존성 주입하기  -->
 
-#### 3-2. 싱글턴 Cache-DB 의존성 주입하기 
+#### 3-2. cache-DB 테스트 코드 작성하기
 
-<details>
+<details open>
 <summary>...(닫기)</summary>
 
 #### ❖ 합성 함수 (compose function)
@@ -158,459 +168,6 @@ module.exports = (...funcs) => {
 
 <!-- #endregion 3-2 -->
 
-
-<!-- #region 3-3 Pouchdb Create/Read/Delete 테스트 코드 작성해보기 -->
-
-#### 3-3. Pouchdb Create/Read/Delete 테스트 코드 작성해보기
-
-<details open>
-<summary>...(닫기)</summary>
-
-<br/>
-
-> 앞으로 차기(cps;continuation pass style)라는 용어와 개념을 처음으로 접하게 된 것은 
-> [프로그래밍 패턴(크리스티나 로페즈)](http://www.yes24.com/Product/Goods/19114313?OzSrank=3) 이라는  
-> 책을 통해서 였습니다. 이후 자바스립트 async generator를 다시 공부하게 되면서 해당 부분을 다시 찾아 본 적이 있었습니다.   
-> 그리고 이번에 redux 라이브러리의 compose 함수와 middleware가 동작하는 방식을 살펴본 뒤 해당 패턴이 cps라는 사실을  
-> 깨닫게 되었습니다. 
->
-> express server의 middleware도 비슷한 시그니처와 처리를 하고 있으니 cps 패턴이 아닐까 추측해 봅니다. 
-
-<br/>
-
-#### ❖ 앞으로 차기 (continuation passing style)
-
-```ts
-// src/js/store/.js
-
-const logMiddleware = (store) => (next) => (action) => {
-    console.log(action);
-    return next(action);
-};
-
-```
-
-<br/>
-
-* **__앞으로 차기(cps)__** 패턴은 함수 b가 다음 함수 a를 호출하면서 '자신의 컨텍스트'를 a에게 넘겨주는 것을 의미합니다. 
-
-    * 일반적으로는 **_cps_** 는 코드블록 b가 코드블록 a에게 **_'컨텍스트'와 '제어권(code flow)'을 a에게 넘기는 것_** 을 말합니다. 
-
-    * 자바스크립트의 generator의 경우만 보더라도 볼 때 앞으로 차기(cps)는 함수 호출이 아닌 **_구문 형태로도 구현_** 될 수 있습니다. 
-
-    * 명령(command)을 실행하는 방식도 method invocation 방식만 있는 것이 아니듯 .. cps도 구문 형태나 함수 호출에 얽매일 필요는 없을 것 같습니다. 
-
-    * **__앞으로 차기__** 는 널리 사용되는 용어는 아닙니다. ['프로그래밍 패턴']() (크리스티나 로페즈 지음) 책에서 저자가 명명한 것으로 cps 보다는 직관적이라 생각합니다. 😁😁😁
-
-<br/>
-
-* 상기 코드의 logMiddleware는 cps 처리에 필요한 시그니쳐를 연속 람다 전달 형태의 합성 함수로 구현하고 있습니다. 
-
-    * 두번째 인자인 next로 다음 middlewar를 주입받아 next(action)으로 제어권 및 컨텍스트를 전달합니다. 
-
-    * 첫번째 인자인 store는 런타임에 동적으로 생성되는 store로부터 dispatch의 포인터를 캐치하여 가장 안쪽 middleware의 next 함수로 전달하기 위한 고계 합성함수 인자입니다. 
-
-<br/>
-
-</details>
-
-<!-- #endregion 3-3 -->
-
-
-<!-- #region 3-4 Couchdb를 도커 컨테이너로 배포하기 -->
-
-#### 3-4. Couchdb를 도커 컨테이너로 배포하기
-
-> middleware의 chain 호출은 dispatch 함수 호출로 부터 시작됩니다. 아래 테스트 코드에서는 store 객체의   
-> 내부 코드에서 middleware의 연쇄 호출과 무관한 처리를 하는 부분은 과감히 덜어내고 stubStore를 구현하였습니다  
-
-<br/>
-
-<details open>
-<summary>...(닫기)</summary>
-
-* redux의 dispatch 호출시에는 applyMiddleware에 전달되는 middlewar 인자들 중 가장 좌측의 middleware가 먼저 호출됩니다. 
-
-    * 이는 compose 함수에 의해 합성되는 middleware 함수 본체에서 가장 바깥쪽 함수가 가장 먼저 호출된다는 것을 의미하기도 합니다. 
-
-    * 흥미로운 것은 middleware의 합성 함수에 store 인자를 전달하여 얻은 포인터(dispatch)는 가장 내측에 위치한 applyMiddlware의 next가 가리키는 함수 포인터가 된다는 사실입니다. dispatch 함수는 middleware chain의 연쇄 호출의 시작과 끝을 모두 담당한다는 것은 흥미로우면서도 매우 오묘한 사실입 입니다. 
-
-<br/>
-
-🔔 테스트 코드 
-
-**_● jest 테스트 바로가기_**: [`redux/src/compose.ts`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-
-```js 
-const compose = (...funcs) => {
-    return funcs
-        .reduce((a, b) => (...args) => a(b(...args)));
-};
-
-const middlewareA = (store) => (next) => (action) => {
-    action.push('[middlewareA] stack is open');
-    action.push('[middlewareA] before call next');
-    next(action);
-    action.push('[middlewareA] after call next');
-};
-const middlewareB = (store) => (next) => (action) => {
-    action.push('[middlewareB] stack is open');
-    action.push('[middlewareB] before call next');
-    next(action);
-    action.push('[middlewareB] after call next');
-};
-
-// 첫번째 버전 - 구현체를 최대한 간결하게 나타내고자 축약한 버전입니다. 
-
-const action1 = []; // 테스트 메시지를 수집하기 위한 객체입니다. 
-const stubStore = { dispatch: () => {} };
-const chain = [middlewareA, middlewareB].map((middleware) => middleware(stubStore));
-const dispatch = compose(...chain)(stubStore.dispatch);
-dispatch(action1);
-
-// 두번째 버전 - 같은 결과를 나타내지만 좀더 이해하기 쉬운 형태로 함수를 치환했습니다.
-
-const action2 = [];
-const middlewareAA = middlewareA(stubStore);
-const middlewareBB = middlewareB(stubStore);
-const composedMiddleware = (...args) => middlewareAA(middlewareBB(...args));
-const dispatch2 = composedMiddleware(stubStore.dispatch);
-dispatch2(action2);
-
-// 이제 action1, action2를 각각 콘솔에 출력해보면 아래와 같은 결과가 나옵니다. 
-
-[
-    '[middlewareA] stack is open',
-    '[middlewareA] before call next',
-    '[middlewareB] stack is open',
-    '[middlewareB] before call next',
-    '[middlewareB] after call next',
-    '[middlewareA] after call next'
-]
-
-// composeMiddleware를 볼 때, middlewareBB가 먼저 호출되어야 할 것 같지만 
-// 실제로는 그렇게 작동하지 않습니다. middlewareBB의 코드 블록은 
-// middlewareAA에서 내부에서 호출될 때까지 
-// 호출이 지연되기 때문입니다. 
-
-const action = [];
-const stubStore = {
-    dispatch: (action) => {}
-}
-const dispatch = (function middlewareA(action) {
-        action.push('[middlewareA] stack is open');
-        action.push('[middlewareA] before call next');
-        (function middlewareB(action) {
-            action.push('[middlewareB] stack is open');
-            action.push('[middlewareB] before call next');
-            action.push('[middlewareB] after call next');
-            store.dispatch(action);
-        })(action)
-        action.push('[middlewareA] after call next');
-});
-dispatch(action);
-
-// 무엇보다 구조상 가장 중요하면서도 이해하기 어려운 것은 사실 가장 안쪽 미들웨어(middlewareBB)의 
-// next 함수가 가리키는 것이 stubStore의 dispatch 객체라는 것입니다. 
-
-
-```
-
-<br/>
-
-</details>
-
-<!-- #endregion 3-4 -->
-
-
-<!-- #region 3-5 Middleware 내부에서 dispatch가 호출될 경우 호출 스택이 쌓이는 양상 -->
-
-#### 3-5. Middleware 내부에서 dispatch가 호출될 경우 호출 스택이 쌓이는 양상
-
-<details open>
-<summary>...(닫기)</summary>
-
-* redux의 dispatch는 **_스택 안전하지 않은 재귀호출_** 이다. 
-
-    * **_dispatch가 거쳐가는 미들웨어의 숫자가 많거나, 미들웨어 내부에서 dispatch 재귀 호출이 연쇄된다는 것은 나쁜 설계를 의미_** 한다고 생각됩니다. 
-
-    * dispatch **_재귀 호출을 최소화 하는 방법_** 은 rxjs와 같은 함수형/반응형 라이브러리로 기능을 일부 위임하는 것이 방법이 아닐까 싶습니다. 
-
-    * v8 컴파일러의 **_꼬리호출 최적화가 지원_** 된다면 스택 안전한 공재귀 형태로 변형이 가능할 것이므로 메모리 오버플로우는 지연시킬 수 있지 않을까.
-
-    * 공재귀로 처리 가능하다는 것은 루프 처리도 가능하다는 것이니 결국은 이런 이유 때문에라도 redux saga에서는 **_generator 방식의 cps_** 를 사용한 것이 아닐까 싶다..
-
-<br>
-
-
-🔔 테스트 코드 
-
-**_jest 테스트 바로가기_**: [`redux/src/compose.ts`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-
-```ts
-# 
-const middlewares = [
-    (store) => (next) => (action) => {
-        action.A_call_count = action.A_call_count + 1;
-        next(action);
-        if (action.val < 100) {
-            action.val = action.val + 1
-            store.dispatch(action);
-        } else {
-            return
-        }
-    },
-    (store) => (next) => (action) => {
-        action.B_call_count = action.B_call_count + 1;
-        next(action);
-        if (action.val < 100) {
-            action.val = action.val + 1
-            store.dispatch(action);
-        } else {
-            return
-        }
-    }
-];
-const store = createStoreForTest(middlewares);
-const action = { val : 0, A_call_count: 0, B_call_count: 0 };
-store.dispatch(action);
-
-// action을 콘솔로 출력하면 아래와 같은 값이 나온다. 
-// { val: 100, A_call_count: 101, B_call_count: 101 }
-
-```
-
-<br/>
-
-</details> 
-
-<!-- #endregion 3-5 -->
-
-
-<!-- #region 3-6 Middleware 내부 next(action) 호출 시점별로 Middleware chain의 동작은 어떻게 달라지는가 -->
-
-#### 3-6. Middleware 내부 next(action) 호출 시점별로 Middleware chain의 동작은 어떻게 달라지는가
-
-<details>
-<summary>...(닫기)</summary>
-
-* 비동기 처리(Promise)를 담은 dispatch의 경우 middleware들 중 하나가 **_동기화 해주는 resolve 작업_** 을 해야 한다. 
-
-    * 미들웨어 async await 구문을 사용하든 promise.then 구문을 사용하든 **_비동기를 sync하는 시점에는 블록킹이 발생_** 할 수 밖에 없다. 
-
-    * 모든 미들웨어에서 next(action) 호출이 최상단에 위치한다면 각각의 미들웨어는 **_블록킹이 발생하기 전에 비동기 처리가 시작_** 될 수 있는 기회가 주어진다. 
-
-    * 반대로 모든 미들웨어가 자신의 처리가 끝날 때까지 next(action)을 호출을 지연한다면 sync 작업이 수행되는 동안 다음 미들웨어의 호출이 지연되므로 사실상 미들웨어의 연쇄는 하나의 sync blocking 코드가 되므로 **_애플리케이션의 반응성이 낮아진다_** .
-
-<br/>
-
-🔔 예시 코드 
-
-**_jest 테스트 바로가기_**: [`redux/src/compose.ts`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-
-```ts
-// sync blocking 이 발생하는 시나리오 
-
-const middlewares = [
-    (store) => (next) => (action) => {
-        action.push([1, new Date().toISOString()]);
-        next(action);
-    },
-    (store) => (next) => async(action) => {
-        action.push([2, new Date().toISOString()]);
-        action.push([await new Promise(res => setTimeout(res, 2000, 4)), new Date().toISOString()]);
-        next(action);
-    },
-    (store) => (next) => (action) => {
-        action.push([3, new Date().toISOString()]);
-        next(action);
-    }
-];
-const store = createStoreForTest(middlewares);
-const action = [];
-store.dispatch(action);
-await new Promise(res => setTimeout(res, 2000));
-
-// 위에서 잠시 언급했었던 것처럼 
-// 미들웨어의 실행은 인자 순서대로 좌에서 우로 진행됩니다. 
-// 그리고 코드 실행의 결과는 아래 composedMiddleware의 
-// 실행 결과와 유사해 집니다. 
-//
-// 하지만 실제적인 작동은 아래와 같지 않습니다. 
-// 실제로는 호출된 함수는 worker thread의 큐에 들어가기 때문에 
-// 결과만 빼놓고는 아주 상이하게 처리된다는 것을 유념해야 합니다. 
-
-
-// async non-blocking을 가져오는 코드 
-
-const composedMiddleware = async(action) => {
-    //첫번째 미들웨어 
-     action.push([1, new Date().toISOString()]);
-
-    //두번째 미들웨어 
-    (async(action) => {
-        action.push([2, new Date().toISOString()]);
-        action.push([await new Promise(res => setTimeout(res, 2000, 4)), new Date().toISOString()]);
-
-        //세번째 미들웨어 
-        ((action) => {
-            action.push([3, new Date().toISOString()]);
-
-        })(action);
-    })(action);
-};
-
-// 하나의 컨텍스트를 이어 나가는 모습이 단일체 함수의 실행과도 같아 보입니다. 
-// 코드의 모양상 위의 코드는 전형적인 sync blocking 코드에 해당합니다. 
-//
-// 코드 실행결과를 확인하면 2번째 미들웨어의 처리와 3번째 미들웨어의 처리 사이에 
-// 2초의 지연이 발생함을 알 수 있습니다. 
-//
-// 코드가 순차 실행(sync)되면서 중간에 블록킹(bloking)이 발생했습니다.
-//
-// [
-//     [ 1, '2021-01-30T15:41:22.075Z' ],
-//     [ 2, '2021-01-30T15:41:22.075Z' ],
-//     [ 4, '2021-01-30T15:41:24.080Z' ],
-//     [ 3, '2021-01-30T15:41:24.080Z' ]
-// ]
-
-
-// async non-blocking 코드 
-
-const middlewares = [
-    (store) => (next) => (action) => {
-        next(action);
-        action.push([1, new Date().toISOString()]);
-    },
-    (store) => (next) => async(action) => {
-        next(action);
-        action.push([2, new Date().toISOString()]);
-        action.push([await new Promise(res => setTimeout(res, 2000, 4)), new Date().toISOString()]);
-    },
-    (store) => (next) => (action) => {
-        next(action);
-        action.push([3, new Date().toISOString()]);
-    }
-];
-const store = createStoreForTest(middlewares);
-const action = [];
-store.dispatch(action);
-await new Promise(res => setTimeout(res, 2000));
-
-
-// 함수가 next(action) 연쇄를 통해 워커 쓰레드의 큐로 등록되고 나면
-// 이후에는 async하게 작동합니다. 
-//
-// [
-//     [ 3, '2021-01-30T15:59:17.728Z' ],
-//     [ 2, '2021-01-30T15:59:17.728Z' ],
-//     [ 1, '2021-01-30T15:59:17.728Z' ],
-//     [ 4, '2021-01-30T15:59:19.729Z' ]
-// ]
-
-```
-
-</details>
-
-<!-- #endregion 3-6 -->
-
-
-<!-- #region 3-7 버그 없는 깔끔한 코드를 작성하기 위해서도 next(action) 호출은 블록의 최상단에 위치시키는 것이 좋습니다. -->
-
-#### 3-7. 버그 없는 깔끔한 코드를 작성하기 위해서도 next(action) 호출은 블록의 최상단에 위치시키는 것이 좋습니다.
-
-<details open="true">
-<summary>..(닫기)</summary>
-
-* 동기 블록킹 문제 외에도 redux의 middleware의 **_코드를 실수 없이 깔끔하게 작성하기 위해서_** 도 next 호출 코드가 최상단에 위치하는 것이 좋다. 
-
-    * next(action)은 분기문의 끝에다가 적어주어야 하는데 빠트리는 경우에도 에러가 발생하지 않으므로, 발견하기 힘든 버그의 원인이 되기도 한다. 
-
-<br/>
-
-🔔 테스트 코드 
-
-**_jest 테스트 바로가기_**: [`redux/src/compose.ts`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-
-```ts
-// next(action)을 먼저 호출하면 분기문이 끝날 때마다 next(action)을 호출해야 하는 수고로움이 사라집니다. 
-// 그렇지 않으면 단일한 에러 지점이 아니라 다수의 에러 발생 지점을 가지는 것과 같습니다. 
-// 컴파일러의 꼬리 물기 최적화 같은 지원이 가능해지지 않는 다음에야 처리를 마친 이후에 스택을 여는 
-// 공재귀를 구현할 유인이 크지 않습니다. (물론 컨텍스트 메모리 사용량이 일정하다는 장점이 있지만)
-
-const callNextImediateMiddleware = (store) => (next) => (action) => {
-    next(action);
-    if (action.type === 'target') {
-        switch(action.meta) {
-            case 'meta1':
-                return;
-            case 'meta2':
-                return;
-            case 'meta3':
-                return;
-        }
-    } else {
-        return;
-    }
-},
-
-const callNextDelayedMiddleware = (store) => (next) => (action) => {
-    if (action.type === 'target') {
-        switch(action.meta) {
-            case 'meta1':
-                return next(action); // next(action) 첫번째 
-            case 'meta2':
-                return next(action); // next(action) 두번째 
-            case 'meta3':
-                return next(action); // next(action) 세번째 
-        }
-    } else {
-        next(action); // next(action) 네번째
-    }
-},
-
-```
-
-</details>
-
-<!-- #endregion 3-7 -->
-
-
-<!-- #region 3-8 미들웨어의 분기문을 줄이기 위해서는 action에 메시지 type 정보 외에 분류를 위한 meta infomation을 포함시켜야 한다. -->
-
-#### 3-8. 미들웨어의 분기문을 줄이기 위해서는 action에 메시지 type 정보 외에 분류를 위한 meta infomation을 포함시켜야 한다. 
-
-<details open="true">
-<summary>..(닫기)</summary>
-
-* 애플리케이션의 feature가 늘어날 수록 미들웨어에 다양한 action을 처리하기 위한 **_분기문(if-else, switch case)의 개수_** 가 늘어난다. 
-
-    * 분기문은 프로그램의 복잡성을 증가시키므로 중첩된 분기(2 depth 이상)는 반드시 제거해야 한다. 
-
-    * 객체지향 프로그래밍은 최종적으로 **_if..else 분기 로직을 클래스 다형성으로 대체한뒤 런타임 바인딩(dependency injection)_** 으로 외부화 하는 것이 목표이다. 
-
-    * 미니 프로젝트에서는 YAGNI 원칙에 따라 분기문 제거를 위해 action 메시지에 meta 정보를 부여하여 한 분기문 내에서 처리할 수 있는 메시지의 종류를 늘리는 것까지만 시도하기로 한다.
-
-<br/>
-
-🔔 테스트 코드 
-
-**_jest 테스트 바로가기_**: [`redux/src/compose.ts`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-
-```ts
-# 
-function() {
-
-}
-
-```
-
-<br>
-
-</details>
-
-<!-- endregion 3-8 -->
 
 </details>
 

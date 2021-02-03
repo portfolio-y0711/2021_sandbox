@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 const { MOD_TODO_CREATE, MOD_INPUT_LOADED } = require('./store/vo');
 const { LOG, uid } = require('./util');
-const { EventLogOf } = require('../js/store/middleware/log/log.util');
+const { EventLogOf, ValidatorLogOf } = require('../js/store/middleware/log/log.util');
 
 module.exports = (document, store) => new (class {
   todoForm;
@@ -48,7 +48,7 @@ module.exports = (document, store) => new (class {
         if (this.validateTodoFormInput(formInput)) {
             console.error('input all entries!');
         } else {
-            MOD_TODO_CREATE.document = formInput;
+            MOD_TODO_CREATE.document = { ...formInput, id: uid() };
             store.dispatch(MOD_TODO_CREATE);
             this.todoForm.reset();
             this.setDefaultDate();
@@ -68,8 +68,8 @@ module.exports = (document, store) => new (class {
   validateTodoFormInput(formInput) {
     const isInValidate = formInput.date === '' || formInput.name === '';
     LOG(`${isInValidate 
-      ? EventLogOf({ sender: 'VLD', subject:'(WARN)', message: 'INVALIDATE FORM' }) 
-      : EventLogOf({ sender: 'VLD', subject: 'FORM', message: 'VALIDATED'})}`);
+      ? ValidatorLogOf({ sender: 'VLD', subject:'(WARN)', message: 'INVALIDATE FORM' }) 
+      : ValidatorLogOf({ sender: 'VLD', subject: 'FORM', message: 'VALIDATED'})}`);
     return isInValidate;
   }
 })();
