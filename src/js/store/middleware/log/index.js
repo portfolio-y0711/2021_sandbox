@@ -1,5 +1,6 @@
 const { ActionLogger } = require('./log.util');
-const actionLogger = ActionLogger({ logger: console.log }) 
+const { LOG } = require('../../../util');
+const actionLogger = ActionLogger({ logger: LOG }) 
 const { LogMiddleware } = require('./log.middleware')
 const logMiddleware = LogMiddleware({ actionLogger })
 

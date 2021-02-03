@@ -1,11 +1,10 @@
-const { SENDER_TYPE, SUBJECT_TYPE, MESSAGE_TYPE, MOD_OUTPUT_LOADED, APP_CACHE_FETCH } = require('../../vo');
-const { ActionEvent, ActionCommand, ActionDocument } = require('../../entity');
+const { MOD_OUTPUT_LOADED, MOD_TODO_CREATE, MOD_TODO_DELETE, APP_CACHE_FETCH, APP_CACHE_CREATE, APP_CACHE_DELETE } = require('../../vo');
 const { logCreator: _ } = require('../log/log.util');
 
 describe('Middleware: app', () => {
     const { createStoreForMiddlewareTest }  = require('#tests/middleware')
 
-    it(`catches ActionEvent with ${_(MOD_OUTPUT_LOADED)}`, () => {
+    it(`dispatches "${_(APP_CACHE_FETCH)}" on ActionEvent with    "${_(MOD_OUTPUT_LOADED)}"`, () => {
         let actual;
         const { AppMiddleware } = require('./app.middleware');
         const store = createStoreForMiddlewareTest([AppMiddleware((action) => { actual = action })]);
@@ -13,22 +12,19 @@ describe('Middleware: app', () => {
         expect(actual).toEqual(APP_CACHE_FETCH);
     })
 
-    // it(`appMiddleware catch "${APP__INIT}" action`, async () => {
-    //     let spyFn = jest.fn();
-    //     const createStoreForTest = require('#tests/middleware');
-    //     const middlewares = [require('./middleware.app')({ spy1: spyFn })];
-    //     const store = createStoreForTest(middlewares);
-    //     store.dispatch({type: APP__INIT });
-    //     expect(spyFn).toHaveBeenCalledTimes(1);
-    // })
+    it(`dispatches "${_(APP_CACHE_CREATE)}" on ActionDocument with "${_(MOD_TODO_CREATE)}"`, () => {
+        let actual;
+        const { AppMiddleware } = require('./app.middleware');
+        const store = createStoreForMiddlewareTest([AppMiddleware((action) => { actual = action })]);
+        store.dispatch(MOD_TODO_CREATE);
+        expect(actual).toEqual(APP_CACHE_CREATE);
+    })
 
-    // it(`appMiddleware catch "${APP__INIT}" action`, async () => {
-    //     let spyFn = jest.fn();
-    //     const createStoreForTest = require('#tests/middleware');
-    //     const middlewares = [require('./middleware.app')({ spy1: spyFn })];
-    //     const store = createStoreForTest(middlewares);
-    //     store.dispatch({type: APP__INIT });
-    //     expect(spyFn).toHaveBeenCalledTimes(1);
-    // })
-
+    it(`dispatches "${_(APP_CACHE_DELETE)}" on ActionDocument with "${_(MOD_TODO_DELETE)}"`, () => {
+        let actual;
+        const { AppMiddleware } = require('./app.middleware');
+        const store = createStoreForMiddlewareTest([AppMiddleware((action) => { actual = action })]);
+        store.dispatch(MOD_TODO_DELETE);
+        expect(actual).toEqual(APP_CACHE_DELETE);
+    })
 })

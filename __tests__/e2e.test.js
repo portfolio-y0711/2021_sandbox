@@ -6,17 +6,17 @@ const createDB = require('../src/js/cache-db');
 describe('TodoApp', () => {
     let db;
 
-    beforeAll(() => {
+    beforeAll(async() => {
         document.documentElement.innerHTML = html.toString();
-        db = createDB();
         require('../src/js/main');
         spyOn(console, 'error');
+        await new Promise(res => setTimeout(res, 1000));
     })
 
-    it('should render todoItems on load', () => {
+    it('should render todoItems on load', async() => {
         const expected = [
-            { id: '9377', date: '2021-01-20', name: 'this is list' },
-            { id: 'efd3', date: '2021-01-22', name: 'this is another list' }
+            { id: '9377', date: '2021-01-21', name: 'this is from seed, too' },
+            { id: 'efd3', date: '2021-01-20', name: 'this is from seed' }
         ];
         const actual = Array.from(document.querySelector('#todo-list').children).map(li => {
             const props = Array.from(li.children)
@@ -34,7 +34,7 @@ describe('TodoApp', () => {
         expect(actual).toEqual(expected);
     })
 
-    it.skip('should print console.error on clicking add button when no title is provided in the form', () => {
+    it('should print console.error on clicking add button when no title is provided in the form', () => {
         const todoTitle = document.getElementById('todo-title')
         const addButton = document.getElementById('add-button')
         todoTitle.value = ''
@@ -42,7 +42,7 @@ describe('TodoApp', () => {
         expect(console.error.calls.count()).toBe(1);
     })
 
-    it.skip('should add todoItem when title is provided in the form', () => {
+    it('should add todoItem when title is provided in the form', () => {
         const todoTitle = document.getElementById('todo-title');
         const addButton = document.getElementById('add-button');
         todoTitle.value = 'this is input from test';
@@ -64,7 +64,7 @@ describe('TodoApp', () => {
         expect(actual.length).toEqual(3);
     })
 
-    it.skip('should delete todoItem when delete button clicked', () => {
+    it('should delete todoItem when delete button clicked', async() => {
         const before = Array.from(document.querySelector('#todo-list').children).map(li => {
             const props = Array.from(li.children)
             return Object.values(props)

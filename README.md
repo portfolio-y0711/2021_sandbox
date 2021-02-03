@@ -1,7 +1,33 @@
-## 개념 증명(Proof of Concept)을 위한, 미니멀 프론트엔드 프로젝트 
-> 메인 프로젝트<sup>[1](#footnote_1)</sup> 의 기술적 문제를 사전에 점검하고 여러 가지 대안적 실험을 진행할 수 있는 샌드박스를 구축하고자 합니다.
+## 개념 증명(Proof of Concept)을 위한, 샌드박스 프로젝트 
 
-### 1. 동기 (Motivation) 및 증명 대상 (Concepts)
+> 메인 프로젝트<sup>[1](#footnote_1)</sup>를 진행하며 발생한 기술적 문제를 해결하고 여러 가지 대안적 실험을 진행할 수 있는   
+> <font color="red">샌드박스 프로젝트</font>를 수행하고자 합니다.
+
+<br/>
+
+<font color="purple"><span style="font-weight:bold">
+
+목차 
+
+</span></font>
+
+1. [동기 및 증명 개념](###-1.-동기-(Motivation)-및-증명-개념-(Concepts))
+
+2. [샌드박스 프로젝트 작성 원칙](###-2.-샌드박스-프로젝트-작성-원칙)
+
+3. [메인 프로젝트에서 발생한 문제점과 해결 과정](###-3.-메인-프로젝트에서-발생한-문제점과-해결-과정)  
+
+    다른 문서 가기 - [미들웨어를 어떻게 작성할 것인가](problem_01.md)  
+
+    다른 문서 가기 - [브라우저 캐싱과 원격 데이터베이스로 PWA를 어떻게 구현할 것인가](problem_02.md)
+
+4. [프로젝트를 진행하며 새롭게 습득하게 된 기법들](###-4.-프로젝트를-진행하며-새롭게-습득하게-된-기법들)
+
+5. [회 고 (Retrospective)](###-5.-회-고-(Retrospective))
+
+<br/>
+
+### 1. 동기 (Motivation) 및 증명 개념 (Concepts)
 
 <!-- #region 1 -->
 
@@ -10,7 +36,7 @@
 
 <br/>
 
-🔥 **_프로젝트_** 를 시작하게 된 **_주요 동기_**:   
+🔥 **_미니 프로젝트_** 를 시작하게 된 **_주요 동기_**:   
 
 
 * __개념 증명 및 예광탄 개발__: 기존에 진행하던 메인 프로젝트에 여러 기능이 부가되면서, 변경에 따른 파급효과가 부담스러워 새로운 실험적 시도를 하지 않게  되었습니다. 이 같은 문제 의식을 바탕으로 메인 프로젝트에서 구현하고자 하는 기술을 사전 점검하는 **_개념 증명_** 으로써, 다양한 디자인, 코딩 스타일을 실험해 보기 위한 **_샌드박스_** 로써 금번 미니 프로젝트를 시작하게 되었습니다.
@@ -31,13 +57,16 @@
 
 * __오프라인 퍼스트 (PWA)의 구현__ : 브라우저 캐시 메모리 데이터베이스(pouchdb)와 문서 기반 동기화 분산 데이터베이스(couchdb)를 사용하여 백엔드 서버 운영 환경에 전적으로 의존하지 않는 프로그레시브 웹 애플리케이션을 구현하고자 합니다. 
 
+
 </details>
 
 <br/>
 
+[<<< 목차로 돌아가기](##-개념-증명(Proof-of-Concept)을-위한,-샌드박스-프로젝트)
+
 <!-- #endregion 1 -->
 
-### 2. 미니멀 프로젝트 작성 원칙
+### 2. 샌드박스 프로젝트 작성 원칙
 
 <!-- #region 2 -->
 
@@ -63,13 +92,13 @@
 
 <br/>
 
+[<<< 목차로 돌아가기](##-개념-증명(Proof-of-Concept)을-위한,-샌드박스-프로젝트)
+
 <!-- #endregion 2 -->
 
-### 3. 메인 프로젝트에서 발생한 여러 문제점들과 해결 과정
+### 3. 메인 프로젝트에서 발생한 문제점과 해결 과정
 
 <!-- #region 3 -->
-
-<br/>
 
 <details open>
 <summary>...(전체닫기)</summary>
@@ -126,9 +155,11 @@
 
 <br/>
 
+[<<< 목차로 돌아가기](##-개념-증명(Proof-of-Concept)을-위한,-샌드박스-프로젝트)
+
 <!-- #endregion 3 -->
 
-### 4. 새롭게 습득하게 된 기법들 
+### 4. 프로젝트를 진행하며 새롭게 습득하게 된 기법들 
 
 <!-- #region 4 -->
 
@@ -180,9 +211,9 @@
 
     ```
 
-<br>
+    <br>
 
-</details>
+    </details>
 
 * 미들웨어 테스트 코드를 작성할 때 파라미터 재할당을 이용한 shadowing으로 테스트 code flow와 정상적인 code flow 처리가 취사 선택될 수 있도록 하였습니다.
 
@@ -198,6 +229,31 @@
     ```ts
     // src/js/store/middleware/async/async.middleware.js
 
+    // # 최초 시도한 기법
+    //
+    // dispatch에 spy객체를 전달할 수 없어 jest.spyOn으로 생성한 spy객체를 주입하고 
+    // 코드 내에서 명시적으로 spy 객체를 사용하며 어떤 분기가 실행되는지를 일일히 확인해 보았습니다. 
+
+    const AppMiddleware = ({ spy }) => ({ dispatch }) => (next) => (action) => {
+      next(action);
+      switch (action.type) {
+        case ...: 
+          spy() // spy객체 호출.. 상당히 좋지 않아 보입니다.  
+          dispatch(...)
+          return
+        case ...: 
+          spy() // spy객체 호출.. 상당히 좋지 않아 보입니다.  
+          dispatch(...)
+          return
+        default:
+          spy() // spy객체 호출.. 상당히 좋지 않아 보입ㄴ디ㅏ.  
+          dispatch(...)
+          return
+      }
+    }; 
+
+    //새롭게 바꾼 기법 
+
     const AsyncMiddleware = (dispatch) => (store) => (next) => async(action) => {
 
         next(action);
@@ -208,27 +264,25 @@
         }
 
         dispatch ? (store.dispatch = dispatch) : null; // 테스트가 필요할 때만 dispatch에 stub, spy 등을 주입 후 
-        // store.dispatch를 재할당(shadowing) 해서 원래 처리를 변경합니다. 
-        // dispatch를 주입하지 않으면 원래 계획된 처리를 합니다. 
-
+                                                       // store.dispatch를 재할당(shadowing) 해서 원래 처리를 변경하고  
+                                                       // dispatch를 주입하지 않으면 원래 계획된 처리를 합니다. 
         switch(action) {
-            case CCH_DB_SEED:
-            case CCH_DB_CREATE:
-            case CCH_DB_DELETE:
-            await action.promise
-            return;
-            case CCH_DB_FETCH:
-            res = await action.promise
-            ASY_DOCS_TODOITEMS.document = res;
-            store.dispatch(ASY_DOCS_TODOITEMS);
-            return;
+            case ...:
+                store.dispatch(...); // 원래의 코드를 변경하지 않으니 코드 리딩에 방해가 되지 않습니다. 
+                return;
+            case ...:
+                store.dispatch(...); // 원래의 코드를 변경하지 않으니 코드 리딩에 방해가 되지 않습니다. 
+            default :
+                store.dispatch(...); // 원래의 코드를 변경하지 않으니 코드 리딩에 방해가 되지 않습니다. 
+                return;
         }
     };
 
-    // 실제 테스트에서는 아래와 같이 dispatch 코드를 주입하여 dispatch 호출을 가로채도록 하빈다. 
+    // 실제 테스트에서는 아래와 같이 dispatch 코드를 주입하여 dispatch 호출을 가로채서 확인합니다.  
 
     let actual;
     const middlewares = [AsyncMiddleware((action) => { actual = action })];
+
 
     ```
 
@@ -237,6 +291,8 @@
 </details>
 
 <br/>
+
+[<<< 목차로 돌아가기](##-개념-증명(Proof-of-Concept)을-위한,-샌드박스-프로젝트)
 
 <!-- #endregion 4 -->
 
@@ -263,22 +319,13 @@
 
 <br/>
 
-* TDD가 전제될 지라도, 소규모 프로젝트의 파일 숫자가 늘어나 폴더를 만들고 구조를 재배치 해야 하는 시점에는 타입스크립트로 전환하는 것이 좋다. 
-
-    * 폴더 이동 시에 모듈 임포트가 종종 깨져서 일일히 수정해 주어야 하는 것이 매우 번거로웠습니다. 
-
-    * 이름 변경시에도 타입스크립트 프로젝트보다 매끄럽게 변경되지 않아 수동 작업이 많았다.
-
-
-<br/>
-
-* 코드에 대해 충분히 이해하지 못한 상태로 섣불리 추상화 수준을 높여도 안되고, 적당한 리팩토링 시점을 놓쳐도 안된다는 것을 배워가고 있습니다. 
+* 코드에 대해 충분히 이해하지 못한 상태로 섣불리 추상화 수준을 높여서도 안되고, 리팩토링을 너무 미뤄도 안된다는 것을 배워가고 있습니다. 
 
     * 미들웨어의 개수가 늘어나고 연쇄 처리가 지면서 미들웨어 처리와 관련한 반복과 분기를 제거해야 한다는 압박감이 커져 갔습니다. 
 
-    * 하지만 코드가 반복되는 패턴을 충분히 음미하지 않고, 조급하게 추상화 수준을 높였을 때 다시 코드를 리셋해야 하는 경우가 종종 발생했습니다. 
+    * 하지만 코드가 반복되는 패턴에 충분히 익숙해지기 전에, 조급히 추상화 수준을 높이다 보면 다시 코드를 리셋해야 하는 경우가 종종 발생했습니다. 
 
-    * 그런 점에서 테스트 코드는 추상화 시점을 언제 높여야 할지 좋은 판단 기준을 제공해주는 것 같습니다. 이미 클라이언트 코드를 작성하는 중에 무언가 복잡하다는 생각이 들면 이미 서버 코드는 엉망으로 변해 버리곤 했습니다. 
+    * 테스트 코드는 추상화 시점을 언제 높여야 할지 좋은 판단 기준을 제공해주는 것 같습니다. 소비자(클라이언트측) 코드를 작성하는 중에 이미 준비과정에 복잡하다는 생각이 들면 공급자 코드를 고쳐야 겠다는 느낌이 드는데, 테스트 코드는 항상 소비자 코드를 먼저 작성하니 예방효과가 있었습니다. 
 
 
 <br>
@@ -291,7 +338,7 @@
 
     * 메시지 큐 서비스는 설정과 구동이 간편한 rabbitmq로 먼저 시도해보고 성공시에 redis와 kafka를 취사 선택하여 재구현할 계획을 가지고 있습니다. 
 
-    * 이와 관련하여 ['기업 통합 패턴']()을 읽고 있습니다. 예전부터 읽어보고 싶었던 책인데 재미있게도 백엔드 마이크로서비스 프로젝트 때보다 프론트엔드에서 redux의 내부 구현을 탐구하고 메시지 객체와 핸들러를 만들어보면서 이 책에 대한 관심과 cqrs에 대한 이해가 더욱 많이 진전된 것 같습니다. 
+    * 이와 관련하여 ['기업 통합 패턴'](http://www.yes24.com/Product/Goods/14631181?OzSrank=1)을 읽고 있습니다. 예전부터 읽어보고 싶었던 책인데 프로젝트를 진행하면서 꼭 읽어봐야겠다는 생각이 들었습니다. 재미있게도 백엔드 프로젝트를 진행할 때보다 프론트엔드에서 redux의 내부 구현을 탐구하고 메시지 객체와 핸들러를 직접 설계해보며 통합 패턴에 대한 관심과 cqrs에 대한 이해가 좀 더 넓어 졌습니다.
 
 <br/>
 
@@ -310,23 +357,29 @@
 
 <!-- #endregion 5 -->
 
+[<<< 목차로 돌아가기](##-개념-증명(Proof-of-Concept)을-위한,-샌드박스-프로젝트)
 
 <!-- #region endnote -->
 
 <hr style="border-top:1px solid gray"></hr>
 
-<font size = "2"><a name="footnote_1">1</a>: 
+<font size = "2">
+각주     
+
+<br/>
+
+<a name="footnote_1">1</a>: 
 전체 프로젝트의 기술 스택 및 적용 기술  
 
 > 백엔드는   
-> express와 mongodb를 이용한 **_Restful API 방식_** 과   
-> apollo-express와 typeorm을 이용한 **_Graphql API 방식_** 을   
-> 각각 마이크로서비스로 구성해서 개발하고 있습니다. 
+> express와 mongodb를 이용한 **_Restful API 서버_** 과   
+> apollo-express와 typeorm을 이용한 **_Graphql API 서버_** 을   
+> 마이크로서비스로 분리하여 개발하고 있습니다. 
 > 
 >
 > 프론트엔드는  
 > express와 handlebar를 이용한 **_SSR 방식_** (topnav, sidebar 파트)과   
-> react + redux 라이브러리를 이용한 spa 방식을 혼용해서 개발 중에 있습니다. (app 파트)   
+> react + redux 라이브러리를 이용한 **_SPA 방식_**을 혼용해서 개발 중에 있습니다. (app 파트)   
 > 
 <!-- 
 * 테스트/빌드/배포 &nbsp; : &nbsp; jenkins (virtual box / macbook)  
@@ -334,26 +387,36 @@
 * 컨테이너 저장소 &nbsp;&nbsp; : &nbsp; private dockerhub (virtual box / macbook)  
 * 운영/배포 서버 &nbsp;&nbsp; : kubernetes cluster on kubeadm (virtual box / z800 hp server)
 -->
-* 백엔드
-    * (Restful part)
+
+<br/>
+
+* **백엔드**
+
+    * Restful part
         * runtime: node v13
         * http 서버: express 
         * 데이터베이스: mongoose + mongo
         * 테스트 도구: jest
-    * (Graphql part)
+
+    * Graphql part
         * runtime: node v13
         * http 서버: express 
         * 데이터베이스: apollo + typeorm
         * 테스트 도구: jest
-* 프론트 엔드
-    * (SSR part)
+
+<br/>
+
+* **프론트 엔드**
+
+    * SSR part
         * runtime: node v13 (ts-node + typescript)
         * http 서버: express 
         * 렌더러 라이브러리: handlebar (mustache) 
         * css 라이브러리: bootstrap 3
         * e2e 테스트 도구: (X - 없음)
         * unit 테스트 도구: (X - 없음)
-    * (SPA part)
+
+    * SPA part
         * runtime: chrome v8 (webpack + typescript)
         * 렌더러 라이브러리: react 
         * 상태관리 라이브러리: redux

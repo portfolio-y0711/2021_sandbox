@@ -1,6 +1,46 @@
-## middleware 연쇄는 어떻게 일어나는가
+## Redux Middleware를 어떻게 작성할 것인가?  
 
-> applyMiddleware의 인자로 배치될 middleware 들이 실제로 어떻게 작동하는지 알아보고자 한다. 
+<font size="3" color="red">
+
+️⚡️ 부제: middleware 연쇄는 어떻게 일어나는가
+
+</font>
+
+> applyMiddleware의 인자로 주입되는 middleware 들이 어떠한 과정을 통해 처리되고   
+> 작성시 유의해야 하는 점들에는 어떤 것들이 있는지 알아보고자 합니다.  
+
+<br/>
+
+<font color="purple"><span style="font-weight:bold">
+
+목차 
+
+</span></font>
+
+1. [문제 해결의 기대효과](###-1.-문제-해결의-기대효과-(expected-effect-of-problem-solving))
+
+2. [(잠정적인) 결론](###-2.-잠정적인-결론-(tentative-conclusions))
+
+3. [탐구 과정](###-3.-탐구-과정-(exploration-process))  
+
+    3..1 [redux 경량 구현체 + 테스트 코드 작성하기](####-3-1.-redux-라이브러리-구현체-및-테스트-코드-작성하기)
+
+    3..2 [redux 합성 함수 (Compose) 살펴보기](####-3-2.-redux-합성-함수-(compose-function)-살펴보기)
+
+    3..3 [redux 앞으로 차기 (CPS) 살펴보기](####-3-3.-redux-앞으로-차기-(continuation-pass-style)-살펴보기)
+
+    3..4 [middleware 호출 스택이 열리는 순서](####-3-4.-middleware-호출-스택이-열리는-순서)
+
+    3..5 [middleware 내부에서 dispatch가 호출될 경우 호출 스택이 쌓이는 양상](####-3-5.-Middleware-내부에서-dispatch가-호출될-경우-호출-스택이-쌓이는-양상) 
+
+    3..6 [next(action) 호출 위치에 따라 niddleware chain의 동작은 어떻게 달라지는가](####-3-6.-next(action)-호출-위치에-따라-niddleware-chain의-동작은-어떻게-달라지는가)
+
+    3..7 [실수 없는 코드를 작성하기 위한 next(action)의 호출 위치](####-3-7.-실수-없는-코드를-작성하기-위한-next(action)의-호출-위치)
+
+    3..8 [(추가) 미들웨어의 분기 및 복잡성을 제거하기](####-3-8.-(추가)-미들웨어의-분기-및-복잡성을-제거하기)
+
+<br/>
+
 
 <!-- #region 1 문제 해결의 기대효과 (expected effect of problem solving) -->
 
@@ -27,7 +67,7 @@
 
 <!-- #region 2 잠정적 결론들 (tentative conclusions) -->
 
-### 2. 잠정적 결론들 (tentative conclusions)
+### 2. (잠정적인) 결론 (tentative conclusions)
 
 <details open>
 <summary>...(닫기)</summary>
@@ -46,7 +86,7 @@
 
     *  **_비동기 처리 미들웨어 앞단에_** 배치하는 것이 안전하다. 
 
-    *  next(action)은 각 분기 문의 반환 시점에 호출하는 것이 안전하다. 
+    *  꼬리 호출 최적화가 지원된다는 가정하에, next(action)은 각 분기 문의 반환 시점에 호출하는 것이 유리하다. 
 
 <br/>
 
@@ -73,7 +113,11 @@
 
 <!-- #region 3-1 redux 라이브러리 구현체 및 테스트 코드 작성하기 -->
 
+<font size="4">
+
 #### 3-1. redux 라이브러리 구현체 및 테스트 코드 작성하기 
+
+</font>
 
 <details open>
 <summary>...(닫기)</summary>
@@ -89,14 +133,16 @@
 > apply middleware 또한 복잡하지 않아 해당 코드(typescript)를 javascript로 옮기는 것이 가능해 보였습니다. 
 >
 > 이후 compose와 applyMiddlware에 대한 테스트 코드를 작성하여 작동 여부를 확인한 후 통합 테스트를 진행하였는데  
-> 잘동작하는 것을 보고 가슴을 쓸어내렸습니다. (실험 + 코드 이해가 가능해졌다는 안도감이... 😂 )
-> 짧은 코드였지만 applyMiddleware 부분은 간단함에도 그 함의를 깨닫기 까지 매우 오랜 시간이 걸렸습니다.  
+> 잘동작하는 것을 보고 가슴을 쓸어내렸습니다. (실험 + 코드 이해가 가능해졌다는 안도감이... 😂 )  
+> applyMiddleware 부분은 짧은 코드였지만 그 함의를 깨닫기 까지 시간과 노력을 투자해야 했습니다. 
 > 
 > 단일 middleware를 처리할 수 있는 lightweight redux 구현체는 아래 github repo를 참고하시길 바랍니다. 
 
-<br/>
+<font size="4">
 
-참고한 redux tutorial: [바로가기](https://github.com/heiskr/prezzy-redux-scratch)
+###### 참고한 redux tutorial: [link](https://github.com/heiskr/prezzy-redux-scratch)
+
+</font>
 
 <br/>
 
@@ -112,15 +158,15 @@
 
 <br/>
 
-* 금번 미니프로젝트를 진행하면서 처음으로 
+* 샌드박스 프로젝트를 진행하면서 처음으로 
 
-  * 라이브러리를 경량으로 옮겨보고 테스트 코드를 직접 짜보았는데 관련된 활동이 라이브러리를 이해하는 데 매우 큰 도움이 되었습니다. 
+  * 테스트 코드를 직접 작성하며 라이브러리 주요 구현체를 하나씩 따라해 보았는데 관련된 활동이 라이브러리를 이해하는 데 매우 큰 도움이 되었습니다. 
 
 <br/>
 
-🔎 구현 코드 
+<font size="3">⌘</font> 작성한 코드 
 
-<!-- **_⌘ 프로젝트 구현체_**   -->
+<!-- **_ 프로젝트 구현체_**   -->
 
 **_● compose_**: [`src/js/store/_lib/compose.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
 **_● createStore_**: [`src/js/store/_lib/createStore.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
@@ -130,7 +176,7 @@
 
 <br/>
 
-🔔 테스트 코드 
+<font size="3">⌘</font> 테스트 코드
 
 **_● compose_**: [`src/js/store/_lib/compose.test.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
 **_● createStore_**: [`src/js/store/_lib/createStore.test.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
@@ -140,14 +186,25 @@
 
 <br/>
 
+[<<< 표제문으로 돌아가기](####-3-1.-redux-라이브러리-구현체-및-테스트-코드-작성하기)
+
+<br/>
+
+<br/>
+
 </details>
+
 
 <!-- #endregion 3-1 -->
 
 
 <!-- #region 3-2 redux 합성 함수 (compose function) 살펴보기 -->
 
+<font size="4">
+
 #### 3-2. redux 합성 함수 (compose function) 살펴보기 
+
+</font>
 
 <details open>
 <summary>...(닫기)</summary>
@@ -169,15 +226,22 @@ module.exports = (...funcs) => {
 
     * 전자는 함수가 적용된 값을 다시 함수에 적용시키는 것으로 함수의 실행 및 평가가 가장 안쪽 함수부터 시작됩니다. 
 
-    * 후자는 가장 바깥쪽 함수부터 실행되며 바깥쪽 함수의 구문 내부에서 인자로 받은 안쪽 함수에 대한 호출이 발생할 때 비로소 안쪽 함수가 평가됩니다. 
+    * 후자는 함수가 인자로 평가되기 때문에 가장 바깥쪽 함수부터 실행되며 바깥 함수의 내부에서 인자로 받은 함수에 대한 호출이 발생할 때 비로소 안쪽 함수가 평가됩니다. 
 
 <br/>
 
 * 상기 compose 함수는 임의 개수의 인자로 받은 func을 rest 파라미터로 받아 배열로 변환하고 **_reduce 접기 연산_** 을 적용하여, 오른쪽에서 왼쪽으로 함수의 인자를 전달합니다. 
 
-    * 접기 연산에 의해  함수의 포인터를 다른 함수에 연쇄적으로 넘기는 것만으로는 cps가 구현된 것은 아닙니다. 
+    * 접기 연산에 의해 함수의 포인터를 다른 함수에 연쇄적으로 넘기는 것으로 cps가 구현된 것은 아닙니다. 
 
-    * 나중에 다루겠지만 **_middleware에서 (next)로 다음 함수를 인자로 받고, 함수 내에서 다시 (next) 함수를 호출하며 context를 넘겨주는 부분__** 이 cps 구현에 해당합니다.
+    * 나중에 다루겠지만 **_middleware에서 (next)로 다음 함수를 인자로 받고, 함수 내에서 다시 (next) 함수를 호출하며 context를 넘겨주는 부분__** 이 제대로 작성되어야 cps가 비로소 구현됩니다. 
+
+<br/>
+
+[<<< 표제문으로 돌아가기](####-3-2.-redux-합성-함수-(compose-function)-살펴보기)
+ 
+
+<br/>
 
 <br/>
 
@@ -188,7 +252,11 @@ module.exports = (...funcs) => {
 
 <!-- #region 3-3 redux 앞으로 차기 (continuation pass style) 살펴보기 -->
 
+<font size="4">
+
 #### 3-3. redux 앞으로 차기 (continuation pass style) 살펴보기 
+
+</font>
 
 <details open>
 <summary>...(닫기)</summary>
@@ -201,7 +269,8 @@ module.exports = (...funcs) => {
 > 그리고 이번에 redux 라이브러리의 compose 함수와 middleware가 동작하는 방식을 살펴본 뒤 해당 패턴이 cps라는 사실을  
 > 깨닫게 되었습니다. 
 >
-> express server의 middleware도 비슷한 시그니처와 처리를 하고 있으니 cps 패턴이 아닐까 추측해 봅니다. 
+> express server의 middleware도 또한 비슷한 시그니처와 처리를 하고 있으니 cps 패턴이 아닐까 추측해 봅니다. 
+> redux saga는 앞으로 차기를 generator 형식으로 구현했다는 것을 확인하였습니다. 
 
 <br/>
 
@@ -223,7 +292,7 @@ const logMiddleware = (store) => (next) => (action) => {
 
     * 일반적으로는 **_cps_** 는 코드블록 b가 코드블록 a에게 **_'컨텍스트'와 '제어권(code flow)'을 a에게 넘기는 것_** 을 말합니다. 
 
-    * 자바스크립트의 generator의 경우만 보더라도 볼 때 앞으로 차기(cps)는 함수 호출이 아닌 **_구문 형태로도 구현_** 될 수 있습니다. 
+    * 자바스크립트의 generator의 경우만 보더라도 볼 때 앞으로 차기(cps)는 함수 호출이 아닌 **_구문 형태로도 구현_** 될 수 있으니, GOF 패턴의 경우에서처럼 구현 형태 보다는 실질적인 역할과 기능에 주목할 필요가 있습니다.
 
     * 명령(command)을 실행하는 방식도 method invocation 방식만 있는 것이 아니듯 .. cps도 구문 형태나 함수 호출에 얽매일 필요는 없을 것 같습니다. 
 
@@ -236,6 +305,12 @@ const logMiddleware = (store) => (next) => (action) => {
     * 두번째 인자인 next로 다음 middlewar를 주입받아 next(action)으로 제어권 및 컨텍스트를 전달합니다. 
 
     * 첫번째 인자인 store는 런타임에 동적으로 생성되는 store로부터 dispatch의 포인터를 캐치하여 가장 안쪽 middleware의 next 함수로 전달하기 위한 고계 합성함수 인자입니다. 
+
+<br/>
+
+[<<< 표제문으로 돌아가기](####-3-3.-redux-앞으로-차기-(continuation-pass-style)-살펴보기)
+
+<br/>
 
 <br/>
 
@@ -340,8 +415,13 @@ dispatch(action);
 // 무엇보다 구조상 가장 중요하면서도 이해하기 어려운 것은 사실 가장 안쪽 미들웨어(middlewareBB)의 
 // next 함수가 가리키는 것이 stubStore의 dispatch 객체라는 것입니다. 
 
-
 ```
+
+<br/>
+
+[<<< 표제문으로 돌아가기](####-3-4.-middleware-호출-스택이-열리는-순서)
+
+<br/>
 
 <br/>
 
@@ -352,7 +432,11 @@ dispatch(action);
 
 <!-- #region 3-5 Middleware 내부에서 dispatch가 호출될 경우 호출 스택이 쌓이는 양상 -->
 
+<font size="4">
+
 #### 3-5. Middleware 내부에서 dispatch가 호출될 경우 호출 스택이 쌓이는 양상
+
+</font>
 
 <details open>
 <summary>...(닫기)</summary>
@@ -409,14 +493,24 @@ store.dispatch(action);
 
 <br/>
 
-</details> 
+[<<< 표제문으로 돌아가기](####-3-5.-Middleware-내부에서-dispatch가-호출될-경우-호출-스택이-쌓이는-양상)
+
+<br/>
+
+<br/>
+
+</details>
 
 <!-- #endregion 3-5 -->
 
 
-<!-- #region 3-6 Middleware 내부 next(action) 호출 시점별로 Middleware chain의 동작은 어떻게 달라지는가 -->
+<!-- #region 3-6 next(action) 호출 위치에 따라 niddleware chain의 동작은 어떻게 달라지는가 -->
 
-#### 3-6. Middleware 내부 next(action) 호출 시점별로 Middleware chain의 동작은 어떻게 달라지는가
+<font size="4">
+
+#### 3-6. next(action) 호출 위치에 따라 niddleware chain의 동작은 어떻게 달라지는가
+
+</font>
 
 <details>
 <summary>...(닫기)</summary>
@@ -538,14 +632,26 @@ await new Promise(res => setTimeout(res, 2000));
 
 ```
 
+<br/>
+
+[<<< 표제문으로 돌아가기](####-3-6.-next(action)-호출-위치에-따라-niddleware-chain의-동작은-어떻게-달라지는가)
+
+<br/>
+
+<br/>
+
 </details>
 
 <!-- #endregion 3-6 -->
 
 
-<!-- #region 3-7 버그 없는 깔끔한 코드를 작성하기 위해서도 next(action) 호출은 블록의 최상단에 위치시키는 것이 좋습니다. -->
+<!-- #region 3-7 실수 없는 코드를 작성하기 위한 next(action)의 호출 위치 -->
 
-#### 3-7. 버그 없는 깔끔한 코드를 작성하기 위해서도 next(action) 호출은 블록의 최상단에 위치시키는 것이 좋습니다.
+<font size="4">
+
+#### 3-7. 실수 없는 코드를 작성하기 위한 next(action)의 호출 위치
+
+</font>
 
 <details open>
 <summary>..(닫기)</summary>
@@ -599,14 +705,27 @@ const callNextDelayedMiddleware = (store) => (next) => (action) => {
 
 ```
 
+<br/>
+
+[<<< 표제문으로 돌아가기](####-3-7.-실수-없는-코드를-작성하기-위한-next(action)의-호출-위치)
+
+<br/>
+
+<br/>
+
 </details>
+
 
 <!-- #endregion 3-7 -->
 
 
 <!-- #region 3-8 미들웨어의 분기문을 줄이기 위해서는 action에 메시지 type 정보 외에 분류를 위한 meta infomation을 포함시켜야 한다. -->
 
-#### 3-8. 미들웨어의 분기문을 줄이기 위해서는 action에 메시지 type 정보 외에 분류를 위한 meta infomation을 포함시켜야 한다. 
+<font size="4">
+
+#### 3-8. (추가) 미들웨어의 분기 및 복잡성을 제거하기 
+
+</font>
 
 <details open="true">
 <summary>..(닫기)</summary>
@@ -633,9 +752,13 @@ function() {
 
 ```
 
-<br>
+<br/>
 
-</details>
+[<<< 표제문으로 돌아가기](####-3-8.-(추가)-미들웨어의-분기-및-복잡성을-제거하기)
+
+<br/>
+
+<br/>
 
 <!-- endregion 3-8 -->
 

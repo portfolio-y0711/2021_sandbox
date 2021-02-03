@@ -1,4 +1,10 @@
-## 브라우저 캐싱(pouchdb) + 문서 기반 동기화 데이터베이스(couchdb)로 PWA 구현하기 
+## 브라우저 캐싱(pouchdb) + 원격 데이터베이스(couchdb)로 PWA 구현하기 
+
+<font size="3" color="red">
+
+⚡️ 부제: PWA를 구현하는 가장 쉽고 빠른 방법은 무엇인가  : 
+
+</font>
 
 > applyMiddleware의 인자로 배치될 middleware 들이 실제로 어떻게 작동하는지 알아보고자 한다. 
 
@@ -6,18 +12,19 @@
 
 ### 1. 문제 해결의 기대효과 (expected effect of problem solving)
 
-<details>
+<details open>
 <summary>...(닫기)</summary>
 
 <br/>
 
 🙉 이 **_문제_** 를 해결하면 :   
 
-<!-- * 프론트 엔드 개발시 백엔드 rest api 
+* 백엔드 서버 모킹이나 mock service 코드를 작성하고 백엔드 api를 다시 만들어야 하는 번거로움 없이 자연스럽게 개발을 이어나갈 수 있습니다. 
 
-* 브라우저 캐싱 + amqp 큐 서버를 통한 동기화로 발전시킬 수 있다. 
+* 메시지 큐 서버를 따로 구현하지 않더래도 푸시알람 같은 서비스를 구현해볼 수 있고, 이벤트 주도 개발에 조금 더 친숙해질 수 있을 거라 기대합니다 
 
-* 이벤트 소싱(Event Sourcing) 구현에 한 발자국 좀더 가까이 다가갈 수 있지 않을까... -->
+* 웹앱 방식의 PWA의 동작 방식에 대해 이해하고 관련된 여타 기술을 익히는데 징검다리 역할을 해줄 거라 생각합니다. 
+
 
 </details>
 
@@ -29,7 +36,7 @@
 
 ### 2. 잠정적 결론들 (tentative conclusions)
 
-<details>
+<details open>
 <summary>...(닫기)</summary>
 
 <br/>
@@ -37,11 +44,11 @@
 🐣 이 **_문제_** 를 탐구해보니 :   
 
 
-* CacheMiddleware와 HttpMiddleware를 통합하여 AsyncMiddleware로 추상화가 가능하다.
+* 브라우저 캐시는 
 
 * 싱글턴이 아닌 객체 내부에 싱글턴 객체를 생성하는 방법이 합리적이라 생각됩니다. 
 
-* pouchdb CRD api는 여타 문서 기반 NoSql 서버와 마찬가지로 매우 사용이 쉬웠습니다. 
+* pouchdb CRD api는 여타 문서 기반 NoSql 서버와 마찬가지로  RDBMS에 비해 사용이 직관적고 간편했습니다. 
 
 * pouchdb에서 직접 운영하는 docker 공식 repository는 아니지만 ...()
 
@@ -58,7 +65,7 @@
 
 ### 3. 탐구 과정 (exploration process)
 
-<details open="true">
+<details open>
 <summary>...(닫기)</summary>
 
 <!-- #region 3-1 redux 라이브러리 구현체 및 테스트 코드 작성하기 -->
@@ -78,28 +85,9 @@
 > 하지만 실망하지 않고 redux 라이브러리를 살펴보니 compose 함수가 생각보다 간단하다는 사실을 확인할 수 있었고   
 > apply middleware 또한 복잡하지 않아 해당 코드(typescript)를 javascript로 옮기는 것이 가능해 보였습니다. 
 >
-> 이후 compose와 applyMiddlware에 대한 테스트 코드를 작성하여 작동 여부를 확인한 후 통합 테스트를 진행하였는데  
-> 잘동작하는 것을 보고 가슴을 쓸어내렸습니다. (실험 + 코드 이해가 가능해졌다는 안도감이... 😂 )
-> 짧은 코드였지만 applyMiddleware 부분은 간단함에도 그 함의를 깨닫기 까지 매우 오랜 시간이 걸렸습니다.  
-> 
-> 단일 middleware를 처리할 수 있는 lightweight redux 구현체는 아래 github repo를 참고하시길 바랍니다. 
-
-redux lightweight: [바로가기](https://github.com/heiskr/prezzy-redux-scratch)
 
 
-* 그 동안 여러 라이브러리의 동작을 잘 이해하고자 :
 
-    * 공식 tutorial을 읽어보거나 
-
-    * 관련된 컨퍼런스 세미나 영샹을 시청하거나 
-
-    * 샘플 프로젝트를 clone해서 디버거를 돌려보거나 
-
-    * 라이브러리 내에 있는 테스트 코드를 살펴보는 등의 방법을 사용해왔습니다.  
-
-* 금번 미니프로젝트를 진행하면서 처음으로 
-
-  * 라이브러리를 경량으로 옮겨보고 테스트 코드를 직접 짜보았는데 관련된 활동이 라이브러리를 이해하는 데 매우 큰 도움이 되었습니다. 
 
 <br/>
 

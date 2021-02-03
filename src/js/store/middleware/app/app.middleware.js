@@ -20,9 +20,6 @@ const AppMiddleware = (dispatch) => (store) => (next) => (action) => {
    if (action.constructor === ActionDocument) {
     //    store.dispatch(action);
        switch(action) {
-           case MOD_OUTPUT_LOADED:
-            store.dispatch(APP_CACHE_FETCH);
-            break;
            case MOD_TODO_CREATE:
             APP_CACHE_CREATE.arguments = action.document;
             store.dispatch(APP_CACHE_CREATE);
@@ -39,28 +36,3 @@ const AppMiddleware = (dispatch) => (store) => (next) => (action) => {
 module.exports = {
     AppMiddleware,
 }
-// const AppMiddleware = ({spy1}) => ({dispatch}) => (next) => (action) => {
-//   next(action);
-//   switch (action.type) {
-//     case APP__INIT: 
-//       spy1()
-//       dispatch({
-//           type: APP__CACHE_REQUEST,
-//           meta: {
-//               requestType: META.READ
-//           }
-//       });
-//       return
-//     case CAC__CACHE_RESPONSE: 
-//       if (action.meta.responseStatus === META.SUCCESS) {
-//           console.log(action);
-//           spy1()
-//           dispatch({ type: '[APP] props UPDATE', payload: action.payload });
-//       }
-//       return
-//     default:
-//       return
-//   }
-// };
-
-// module.exports = AppMiddleware;
