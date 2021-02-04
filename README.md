@@ -1,5 +1,6 @@
 ## 개념 증명(Proof of Concept)을 위한, 샌드박스 미니 프로젝트 
 
+
 > 메인 프로젝트<sup>[1](#footnote_1)</sup>를 진행하며 발생한 기술적 문제를 해결하고 여러 가지 대안적 실험을 진행할 수 있는   
 > <font color="red">샌드박스 미니 프로젝트</font>를 수행하고자 합니다.
 
@@ -11,25 +12,20 @@
 
 </span></font>
 
-Link: [Google][1]
 
-[1]: ###-1.-동기-(Motivation)-및-증명-개념-(Concepts) "Motivation"
+1. 동기 및 증명 개념
 
-1. [동기 및 증명 개념][1]
+2. 샌드박스 미니 프로젝트 작성 원칙
 
-<!-- 1. [동기 및 증명 개념][1](###-1.-동기-(Motivation)-및-증명-개념-(Concepts)) -->
-
-2. [샌드박스 미니 프로젝트 작성 원칙](###-2.-샌드박스-미니-프로젝트-작성-원칙)
-
-3. [메인 프로젝트에서 발생한 문제점과 해결 과정](###-3.-메인-프로젝트에서-발생한-문제점과-해결-과정)  
+3. 메인 프로젝트에서 발생한 문제점과 해결 과정
 
     다른 문서 가기 - [미들웨어를 어떻게 작성할 것인가](problem_01.md)  
 
     다른 문서 가기 - [브라우저 캐싱과 원격 데이터베이스로 PWA를 어떻게 구현할 것인가](problem_02.md)
 
-4. [프로젝트를 진행하며 새롭게 습득하게 된 기법들](###-4.-프로젝트를-진행하며-새롭게-습득하게-된-기법들)
+4. 프로젝트를 진행하며 새롭게 습득하게 된 기법들
 
-5. [회 고 (Retrospective)](###-5.-회-고-(Retrospective))
+5. 회 고 (Retrospective)
 
 <br/>
 
@@ -68,7 +64,7 @@ Link: [Google][1]
 
 <br/>
 
-[<<< 목차로 돌아가기](##-개념-증명(Proof-of-Concept)을-위한,-샌드박스-미니-프로젝트)
+<!-- [<<< 목차로 돌아가기]() -->
 
 <!-- #endregion 1 -->
 
@@ -98,7 +94,7 @@ Link: [Google][1]
 
 <br/>
 
-[<<< 목차로 돌아가기](##-개념-증명(Proof-of-Concept)을-위한,-샌드박스-미니-프로젝트)
+<!-- [<<< 목차로 돌아가기]() -->
 
 <!-- #endregion 2 -->
 
@@ -109,7 +105,7 @@ Link: [Google][1]
 <details open>
 <summary>...(전체닫기)</summary>
 
-#### 문제점 1: Redux Middleware를 어떻게 작성할 것인가?
+#### [문제점 1: Redux Middleware를 어떻게 작성할 것인가?](./problem_01.md)
 
 <br/>
 
@@ -124,25 +120,25 @@ Link: [Google][1]
 
 ⚡️ **_middleware_** 연쇄는 **_어떻게 일어나는가_** : 
 
-* [redux 경량 구현체 + 테스트 코드 작성하기](problem_01.md####-3-1.-redux-라이브러리-구현체-및-테스트-코드-작성하기)
+* redux 경량 구현체 + 테스트 코드 작성하기
 
-* [redux 합성 함수 (Compose) 살펴보기](problem_01####-3-2.-redux-합성-함수-(compose-function)-살펴보기)
+* redux 합성 함수 (Compose) 살펴보기
 
-* [redux 앞으로 차기 (CPS) 살펴보기](problem_01####-3-3.-redux-앞으로-차기-(continuation-pass-style)-살펴보기)
+* redux 앞으로 차기 (CPS) 살펴보기
 
-* [middleware 호출 스택이 열리는 순서](problem_01####-3-4.-middleware-호출-스택이-열리는-순서)
+* middleware 호출 스택이 열리는 순서
 
-* [middleware 내부에서 dispatch가 호출될 경우 호출 스택이 쌓이는 양상](problem_01####-3-5.-Middleware-내부에서-dispatch가-호출될-경우-호출-스택이-쌓이는-양상) 
+* middleware 내부에서 dispatch가 호출될 경우 호출 스택이 쌓이는 양상
 
-* [next(action) 호출 위치에 따라 niddleware chain의 동작은 어떻게 달라지는가](problem_01####-3-6.-next(action)-호출-위치에-따라-niddleware-chain의-동작은-어떻게-달라지는가)
+* next(action) 호출 위치에 따라 niddleware chain의 동작은 어떻게 달라지는가
 
-* [실수 없는 코드를 작성하기 위한 next(action)의 호출 위치](problem_01####-3-7.-실수-없는-코드를-작성하기-위한-next(action)의-호출-위치)
+* 실수 없는 코드를 작성하기 위한 next(action)의 호출 위치
 
-* [(추가) 미들웨어의 분기 및 복잡성을 제거하기](problem_01####-3-8.-(추가)-미들웨어의-분기-및-복잡성을-제거하기)
+* (추가) 미들웨어의 분기 및 복잡성을 제거하기]
 
 <br/>
 
-#### 문제점 2: 브라우저 캐싱 + 원격 데이터베이스로 PWA 구현하기 
+#### [문제점 2: 브라우저 캐싱 + 원격 데이터베이스로 PWA 구현하기](./problem_02.md)
 
 <br/>
 
@@ -164,8 +160,8 @@ Link: [Google][1]
 
 </font>
 
-* [cache-DB 연결 객체는 언제 생성하고 어떻게 관리하나](problem_02.md####-3-1.-cache-DB-연결-객체는-언제-생성하고-어떻게-관리하나)
-* [cache-DB 테스트 코드 작성하기](problem_02.md####-3-2.-cache-DB-테스트-코드-작성하기)
+* cache-DB 연결 객체는 언제 생성하고 어떻게 관리하나 (완결)
+* cache-DB 테스트 코드 작성하기 (완결)
 
 <font color="pink">
 
@@ -178,7 +174,7 @@ Link: [Google][1]
 
 <br/>
 
-[<<< 목차로 돌아가기](##-개념-증명(Proof-of-Concept)을-위한,-샌드박스-미니-프로젝트)
+<!-- [<<< 목차로 돌아가기](##-개념-증명(Proof-of-Concept)을-위한,-샌드박스-미니-프로젝트) -->
 
 <!-- #endregion 3 -->
 
@@ -378,7 +374,7 @@ Link: [Google][1]
 
 <br>
 
-[<<< 목차로 돌아가기](##-개념-증명(Proof-of-Concept)을-위한,-샌드박스-미니-프로젝트)
+<!-- [<<< 목차로 돌아가기](##-개념-증명(Proof-of-Concept)을-위한,-샌드박스-미니-프로젝트) -->
 
 <!-- #endregion 5 -->
 
@@ -405,6 +401,7 @@ Link: [Google][1]
 > express와 handlebar를 이용한 **_SSR 방식_** (topnav, sidebar 파트)과   
 > react + redux 라이브러리를 이용한 **_SPA 방식_**을 혼용해서 개발 중에 있습니다. (app 파트)   
 > 
+
 <!-- 
 * 테스트/빌드/배포 &nbsp; : &nbsp; jenkins (virtual box / macbook)  
 * 코드 저장소 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : &nbsp; private gitlab (virtual box / macbook)  
@@ -451,3 +448,11 @@ Link: [Google][1]
 
 
 <!-- #endregion endnote -->
+
+<!-- 
+[1]: ###-1.-동기-(Motivation)-및-증명-개념-(Concepts) ""
+[2]: ###-2.-샌드박스-미니-프로젝트-작성-원칙 ""
+[3]: ###-3.-메인-프로젝트에서-발생한-문제점과-해결-과정) ""
+[4]: ###-4.-프로젝트를-진행하며-새롭게-습득하게-된-기법들 ""
+[5]: ###-5.-회-고-(Retrospective) "" 
+-->
