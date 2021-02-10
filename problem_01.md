@@ -51,11 +51,11 @@
 
 🙉 이 **_문제_** 를 이해하면 :   
 
-* middleware의 배치 순서에 따라 애플리케이션의 동작이 어떻게 달라지는지 예측할 수 있다. 
+* middleware의 배치 순서에 따라 애플리케이션의 동작이 어떻게 달라지는지 예측할 수 있습니다. 
 
-* 응답성을 최대화 하기 위해 middlware 블록 내부의 next(action) 문 호출이 언제 발생해야 하는지를 결정할 수 있다. 
+* 응답성을 최대화 하기 위해 middlware 블록 내부의 next(action) 문 호출이 언제 발생해야 하는지를 결정할 수 있습니다. 
 
-* 비동기 요청을 처리하는 middleware를 선순서로 배치할지, 후선서로 배치할 지 결정할 수 있다. 
+* 비동기 요청을 처리하는 middleware를 선순서로 배치할지, 후순서로 배치할 지 결정할 수 있습니다. 
 
 <br/>
 
@@ -74,21 +74,21 @@
 
 🐣 이 **_문제_** 를 탐구해보니 :   
 
-* middleware 연쇄는 **_합성 함수(compose)_** 와 **_앞으로 차기(CPS)_** 로 작동한다. 
+* middleware 연쇄는 **_합성 함수(compose)_** 와 **_앞으로 차기(CPS)_** 로 작동합니다. 
 
-* middleware 호출 스택은 applyMiddleware 인자의 순서대로  **_좌에서 우로_** 열린다. 
+* middleware 호출 스택은 applyMiddleware 인자의 순서대로  **_좌에서 우로_** 열립니다. 
 
 * 일반적인 middleware의 경우:
 
-    *  **_비동기 처리 미들웨어 앞단에_** 배치하는 것이 안전하다. 
+    *  applyMiddleware에 주입할 때 **_비동기 처리 미들웨어 앞단에_** 배치하는 것이 안전합니다. 
 
-    *  꼬리 호출 최적화가 지원된다는 가정하에, next(action)은 각 분기 문의 반환 시점에 호출하는 것이 유리하다. 
+    *  꼬리 호출 최적화가 지원된다는 가정하에, next(action)은 각 분기 문의 반환 시점에 호출하는 것이 유리합니다. 
 
 * 비동기 요청을 동기화 하는 (async) middleware의 경우:
 
-  *  **_가장 마지막에 배치_** 하는 것이 안전하다. 
+  *  applyMiddleware에 주입할 때 **_가장 마지막에 배치_** 하는 것이 안전합니다. 
 
-  *  next(action)을 블록문의 **_가장 상단에 위치_** 시키는 것이 안전하다. 
+  *  next(action)을 블록문의 **_가장 상단에 위치_** 시키는 것이 안전합니다. 
 
 <br/>
 
@@ -311,7 +311,7 @@ const logMiddleware = (store) => (next) => (action) => {
 
     * 이는 compose 함수에 의해 합성되는 middleware 함수 본체에서 가장 바깥쪽 함수가 가장 먼저 호출된다는 것을 의미하기도 합니다. 
 
-    * 흥미로운 것은 middleware의 합성 함수에 store 인자를 전달하여 얻은 포인터(dispatch)는 가장 내측에 위치한 applyMiddlware의 next가 가리키는 함수 포인터가 된다는 사실입니다. dispatch 함수는 middleware chain의 연쇄 호출의 시작과 끝을 모두 담당한다는 것은 흥미로우면서도 매우 오묘한 사실입 입니다. 
+    * 흥미로운 것은 middleware의 합성 함수에 store 인자를 전달하여 얻은 포인터(dispatch)는 가장 내측에 위치한 applyMiddlware의 next가 가리키는 함수 포인터가 된다는 사실입니다. dispatch 함수는 middleware chain의 연쇄 호출의 시작과 끝에서 호출된다는 점은 흥미로우면서도 매우 오묘한 사실입니다. 
 
 <br/>
 
@@ -417,9 +417,9 @@ dispatch(action);
 
     * dispatch **_재귀 호출을 최소화 하는 방법_** 은 rxjs와 같은 함수형/반응형 라이브러리로 기능을 일부 위임하는 것이 방법이 아닐까 싶습니다. 
 
-    * v8 컴파일러의 **_꼬리호출 최적화가 지원_** 된다면 스택 안전한 공재귀 형태로 변형이 가능할 것이므로 메모리 오버플로우는 지연시킬 수 있지 않을까.
+    * 스택 안전한 공재귀 형태로 변형할 시 재귀 형태에 비해 메모리 사용량을 감소시킬 수 있는 장점이 있고, v8 컴파일러의 **_꼬리호출 최적화가 지원_** 된다면 안전한 재귀호출이 가능해집니다.
 
-    * 공재귀로 처리 가능하다는 것은 루프 처리도 가능하다는 것이니 결국은 이런 이유 때문에라도 redux saga에서는 **_generator 방식의 cps_** 를 사용한 것이 아닐까 싶다..
+    * 공재귀로 변환 가능한 재귀는 것은 루프로도 변환 가능하니, redux saga에서는 스택 안전한 루프로 처리하기 위해 **_generator 방식의 cps_** 를 도입한 것으로 생각됩니다. 
 
 <br>
 
@@ -614,9 +614,9 @@ await new Promise(res => setTimeout(res, 2000));
 <details open>
 <summary>..(닫기)</summary>
 
-* 동기 블록킹 문제 외에도 redux의 middleware의 **_코드를 실수 없이 깔끔하게 작성하기 위해서_** 도 next 호출 코드가 최상단에 위치하는 것이 좋다. 
+* 동기 블록킹 문제 외에도 redux의 middleware의 **_코드를 실수 없이 깔끔하게 작성하기 위해서_** 도 next 호출 코드가 최상단에 위치하는 것이 좋습니다. 
 
-    * next(action)은 분기문의 끝에다가 적어주어야 하는데 빠트리는 경우에도 에러가 발생하지 않으므로, 발견하기 힘든 버그의 원인이 되기도 한다. 
+    * next(action)은 분기문의 끝에다가 적어주어야 하는데 빠트리는 경우에도 에러가 발생하지 않으므로, 발견하기 힘든 버그의 원인이 되기도 합니다. 
 
 <br/>
 
@@ -678,11 +678,11 @@ const callNextDelayedMiddleware = (store) => (next) => (action) => {
 
 * 애플리케이션의 feature가 늘어날 수록 미들웨어에 다양한 action을 처리하기 위한 **_분기문(if-else, switch case)의 개수_** 가 늘어납니다.
 
-    * 분기문은 프로그램의 복잡성을 증가시키므로 중첩된 분기(2 depth 이상)는 반드시 제거해야 합니다.  
+    * 분기문은 프로그램의 복잡성을 증가시키므로 중첩된 분기(2 depth 이상)는 가급적 제거하는 것이 좋습니다.  
 
     * 객체지향 프로그래밍은 최종적으로 **_if..else 분기 로직을 클래스 다형성으로 대체한뒤 런타임 바인딩(dependency injection)_** 으로 외부화 하는 것이 목표입니다. 
 
-    * 미니 프로젝트에서는 미들웨어의 복잡성을 줄이기 위해 ~~YAGNI 원칙에 따라 분기문 제거를 위해 action 메시지에 meta 정보를 부여하여 한 분기문 내에서 처리할 수 있는 메시지의 종류를 늘리는 것까지만 시도하기로 한다~~ action을 event, document, command, async-command 네 가지로 분류하고 관련된 객체를 도입함으로써 분기 처리를 줄였습니다.
+    * 미니 프로젝트에서는 ~~YAGNI 원칙에 따라 분기문 제거를 위해 action 메시지에 meta 정보를 부여하여 한 분기문 내에서 처리할 수 있는 메시지의 종류를 늘리는 것까지만 시도하기로 한다~~ action을 event, document, command, async-command 네 가지로 분류하고 관련된 객체를 도입함으로써 미들웨어 분기 처리의 복잡도를 완화하였습니다.
 
 <br/>
 
@@ -727,8 +727,48 @@ const AppMiddleware = (dispatch) => (store) => (next) => (action) => {
    }
 }
 
-module.exports = {
-    AppMiddleware,
+// ActionCommand, AsyncActionCommand, ActionDocument, ActionEvent의 정의는 아래와 같습니다. 
+
+class ActionCommand {
+    sender;
+    subject;
+    command;
+    arguments;
+    constructor(sender, subject, command) {
+        this.sender = sender;
+        this.subject = subject;
+        this.command = command;
+    }
+}
+
+class AsyncActionCommand extends ActionCommand{
+    promise;
+    constructor(sender, subject, command) {
+        super(sender, subject, command);
+    }
+}
+
+class ActionEvent {
+    sender;
+    subject;
+    message;
+    constructor(sender, subject, message) {
+        this.sender = sender;
+        this.subject = subject;
+        this.message = message;
+    }
+}
+
+class ActionDocument {
+    sender;
+    subject;
+    doctype;
+    document;
+    constructor(sender, subject, doctype) {
+        this.sender = sender;
+        this.subject = subject;
+        this.doctype = doctype;
+    }
 }
 
 ```
