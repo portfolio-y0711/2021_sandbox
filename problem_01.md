@@ -158,21 +158,21 @@
 
 <!-- **_ 프로젝트 구현체_**   -->
 
-**_● compose_**: [`src/js/store/_lib/compose.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-**_● createStore_**: [`src/js/store/_lib/createStore.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-**_● applyMiddleware_**: [`src/js/store/_lib/applyMiddleware.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-**_● middleware_**: [`src/js/store/middleware/log/middleware.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-**_● bindAction_**: [`src/js/store/_lib/bindAction.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
+**_● compose_**: [`src/js/store/_lib/compose.js`](https://github.com/portfolio-y0711/2021_sandbox/blob/main/src/js/store/_lib/compose.js)  
+**_● createStore_**: [`src/js/store/_lib/createStore.js`](https://github.com/portfolio-y0711/2021_sandbox/blob/main/src/js/store/_lib/createStore.js)  
+**_● applyMiddleware_**: [`src/js/store/_lib/applyMiddleware.js`](https://github.com/portfolio-y0711/2021_sandbox/blob/main/src/js/store/_lib/applyMiddleware.js)  
+**_● middleware_**: [`src/js/store/middleware/log/middleware.js`](https://github.com/portfolio-y0711/2021_sandbox/blob/main/src/js/store/middleware/log/log.middleware.js)  
+**_● bindAction_**: [`src/js/store/_lib/bindAction.js`](https://github.com/portfolio-y0711/2021_sandbox/blob/main/src/js/store/_lib/bindAction.js)  
 
 <br/>
 
 <font size="3">⌘</font> 테스트 코드
 
-**_● compose_**: [`src/js/store/_lib/compose.test.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-**_● createStore_**: [`src/js/store/_lib/createStore.test.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-**_● applyMiddleware_**: [`src/js/store/_lib/applyMiddleware.test.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-**_● middleware_**: [`src/js/store/middleware/log/middleware..testjs`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-**_● bindAction_**: [`src/js/store/_lib/bindAction.test.js`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
+**_● compose_**: [`src/js/store/_lib/compose.test.js`](https://github.com/portfolio-y0711/2021_sandbox/blob/main/src/js/store/_lib/compose.test.js)  
+**_● createStore_**: [`src/js/store/_lib/createStore.test.js`](https://github.com/portfolio-y0711/2021_sandbox/blob/main/src/js/store/_lib/createStore.test.js)  
+**_● applyMiddleware_**: [`src/js/store/_lib/applyMiddleware.test.js`](https://github.com/portfolio-y0711/2021_sandbox/blob/main/src/js/store/_lib/applyMiddleware.test.js)  
+**_● middleware_**: [`src/js/store/middleware/log/middleware.test.js`](https://github.com/portfolio-y0711/2021_sandbox/blob/main/src/js/store/middleware/log/log.middleware.test.js)  
+**_● bindAction_**: [`src/js/store/_lib/bindAction.test.js`](https://github.com/portfolio-y0711/2021_sandbox/blob/main/src/js/store/_lib/bindAction.test.js)  
 
 
 <br/>
@@ -196,8 +196,9 @@
 
 #### ❖ 합성 함수 (compose function)
 
+[`src/js/store/_lib/compose.js`](https://github.com/portfolio-y0711/2021_sandbox/blob/main/src/js/store/_lib/compose.js)  
+
 ```ts
-// src/js/store/_lib/compose.js
 
 module.exports = (...funcs) => {
   return funcs.reduce((a, b) => (...args) => a(b(...args)));
@@ -255,9 +256,9 @@ module.exports = (...funcs) => {
 
 #### ❖ 앞으로 차기 (continuation passing style)
 
-```ts
-// src/js/store/.js
+[`src/js/store/store/middleware/log/log.middleware.js`](https://github.com/portfolio-y0711/2021_sandbox/blob/main/src/js/store/middleware/log/log.middleware.js)  
 
+```ts
 const logMiddleware = (store) => (next) => (action) => {
     console.log(action);
     return next(action);
@@ -316,7 +317,7 @@ const logMiddleware = (store) => (next) => (action) => {
 
 🔔 테스트 코드 
 
-**_● jest 테스트 바로가기_**: [`redux/src/compose.ts`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
+**_● jest 테스트 바로가기_**: [`./src/js/store/middleware/_exp/process_order.exp.test.js`](https://github.com/portfolio-y0711/2021_sandbox/blob/main/src/js/store/middleware/_exp/process_order.exp.test.js)  
 
 ```js 
 const compose = (...funcs) => {
@@ -425,7 +426,7 @@ dispatch(action);
 
 🔔 테스트 코드 
 
-**_jest 테스트 바로가기_**: [`redux/src/compose.ts`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
+**_jest 테스트 바로가기_**: [`./src/js/store/middleware/_exp/unsafe_stack.exp.test.js`](https://github.com/portfolio-y0711/2021_sandbox/blob/main/src/js/store/middleware/_exp/unsafe_stack.exp.test.js)  
 
 ```ts
 # 
@@ -478,19 +479,19 @@ store.dispatch(action);
 <details>
 <summary>...(닫기)</summary>
 
-* 비동기 처리(Promise)를 담은 dispatch의 경우 middleware들 중 하나가 **_동기화 해주는 resolve 작업_** 을 해야 한다. 
+* 비동기 처리(Promise)를 담은 dispatch의 경우 middleware들 중 하나가 **_동기화 해주는 resolve 작업_** 을 해야 합니다. 
 
-    * 미들웨어 async await 구문을 사용하든 promise.then 구문을 사용하든 **_비동기를 sync하는 시점에는 블록킹이 발생_** 할 수 밖에 없다. 
+    * 미들웨어 async await 구문을 사용하든 promise.then 구문을 사용하든 **_비동기를 sync하는 시점에는 블록킹이 발생_** 할 수 밖에 없습니다. 
 
-    * 모든 미들웨어에서 next(action) 호출이 최상단에 위치한다면 각각의 미들웨어는 **_블록킹이 발생하기 전에 비동기 처리가 시작_** 될 수 있는 기회가 주어진다. 
+    * 모든 미들웨어에서 next(action) 호출이 최상단에 위치한다면 각각의 미들웨어는 **_블록킹이 발생하기 전에 비동기 처리가 시작_** 될 수 있는 기회가 주어집니다. 
 
-    * 반대로 모든 미들웨어가 자신의 처리가 끝날 때까지 next(action)을 호출을 지연한다면 sync 작업이 수행되는 동안 다음 미들웨어의 호출이 지연되므로 사실상 미들웨어의 연쇄는 하나의 sync blocking 코드가 되므로 **_애플리케이션의 반응성이 낮아진다_** .
+    * 반대로 모든 미들웨어가 자신의 처리가 끝날 때까지 next(action)을 호출을 지연한다면 sync 작업이 수행되는 동안 다음 미들웨어의 호출이 지연되므로 사실상 미들웨어의 연쇄는 하나의 sync blocking 코드가 되므로 **_애플리케이션의 반응성이 낮아집니다_** .
 
 <br/>
 
 🔔 예시 코드 
 
-**_jest 테스트 바로가기_**: [`redux/src/compose.ts`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
+**_jest 테스트 바로가기_**: [`./src/js/store/middleware/_exp/position_next.exp.test.js`](https://github.com/portfolio-y0711/2021_sandbox/blob/main/src/js/store/middleware/_exp/position_next.exp.test.js)  
 
 ```ts
 // sync blocking 이 발생하는 시나리오 
@@ -619,10 +620,6 @@ await new Promise(res => setTimeout(res, 2000));
 
 <br/>
 
-🔔 테스트 코드 
-
-**_jest 테스트 바로가기_**: [`redux/src/compose.ts`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
-
 ```ts
 // next(action)을 먼저 호출하면 분기문이 끝날 때마다 next(action)을 호출해야 하는 수고로움이 사라집니다. 
 // 그렇지 않으면 단일한 에러 지점이 아니라 다수의 에러 발생 지점을 가지는 것과 같습니다. 
@@ -679,24 +676,59 @@ const callNextDelayedMiddleware = (store) => (next) => (action) => {
 <details open="true">
 <summary>..(닫기)</summary>
 
-* 애플리케이션의 feature가 늘어날 수록 미들웨어에 다양한 action을 처리하기 위한 **_분기문(if-else, switch case)의 개수_** 가 늘어난다. 
+* 애플리케이션의 feature가 늘어날 수록 미들웨어에 다양한 action을 처리하기 위한 **_분기문(if-else, switch case)의 개수_** 가 늘어납니다.
 
-    * 분기문은 프로그램의 복잡성을 증가시키므로 중첩된 분기(2 depth 이상)는 반드시 제거해야 한다. 
+    * 분기문은 프로그램의 복잡성을 증가시키므로 중첩된 분기(2 depth 이상)는 반드시 제거해야 합니다.  
 
-    * 객체지향 프로그래밍은 최종적으로 **_if..else 분기 로직을 클래스 다형성으로 대체한뒤 런타임 바인딩(dependency injection)_** 으로 외부화 하는 것이 목표이다. 
+    * 객체지향 프로그래밍은 최종적으로 **_if..else 분기 로직을 클래스 다형성으로 대체한뒤 런타임 바인딩(dependency injection)_** 으로 외부화 하는 것이 목표입니다. 
 
-    * 미니 프로젝트에서는 YAGNI 원칙에 따라 분기문 제거를 위해 action 메시지에 meta 정보를 부여하여 한 분기문 내에서 처리할 수 있는 메시지의 종류를 늘리는 것까지만 시도하기로 한다.
+    * 미니 프로젝트에서는 미들웨어의 복잡성을 줄이기 위해 ~~YAGNI 원칙에 따라 분기문 제거를 위해 action 메시지에 meta 정보를 부여하여 한 분기문 내에서 처리할 수 있는 메시지의 종류를 늘리는 것까지만 시도하기로 한다~~ action을 event, document, command, async-command 네 가지로 분류하고 관련된 객체를 도입함으로써 분기 처리를 줄였습니다.
 
 <br/>
 
-🔔 테스트 코드 
-
-**_jest 테스트 바로가기_**: [`redux/src/compose.ts`](https://github.com/reduxjs/redux/blob/master/src/compose.ts)  
 
 ```ts
-# 
-function() {
+// 아래의 app 미들웨어는 ActionCommand, AsyncActionCommand는 처리하지 않고 
+// ActionEvent와 ActionDocument의 경우에만 디스패치된 액션의 종류를 판별하여 처리합니다. 
 
+const { ActionEvent, AsyncActionCommand, ActionCommand, ActionDocument } = require('../../entity');
+const { MOD_OUTPUT_LOADED, MOD_TODO_CREATE, MOD_TODO_DELETE, APP_CACHE_FETCH, APP_CACHE_CREATE, APP_CACHE_DELETE } = require('../../vo');
+
+const AppMiddleware = (dispatch) => (store) => (next) => (action) => {
+   next(action);
+   dispatch ? store.dispatch = dispatch : null;
+
+   if (action.constructor === ActionCommand || AsyncActionCommand) {
+    //    store.dispatch(action);
+       return;
+   }
+
+   if (action.constructor === ActionEvent) {
+       switch(action) {
+           case MOD_OUTPUT_LOADED:
+            store.dispatch(APP_CACHE_FETCH);
+            break;
+       }
+   }
+
+   if (action.constructor === ActionDocument) {
+    //    store.dispatch(action);
+       switch(action) {
+           case MOD_TODO_CREATE:
+            APP_CACHE_CREATE.arguments = action.document;
+            store.dispatch(APP_CACHE_CREATE);
+            break;
+           case MOD_TODO_DELETE:
+            APP_CACHE_DELETE.arguments = action.document;
+            store.dispatch(APP_CACHE_DELETE);
+            break;
+       }
+       return;
+   }
+}
+
+module.exports = {
+    AppMiddleware,
 }
 
 ```

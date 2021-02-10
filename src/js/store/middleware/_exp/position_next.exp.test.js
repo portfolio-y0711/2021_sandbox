@@ -1,7 +1,7 @@
 describe('Middleware: internals', () => {
     let stubStore;
     let compose;
-    let createStoreForTest;
+    let createStoreForMiddlewareTest;
     beforeAll(() => {
         compose = (...funcs) => {
             return funcs.reduce((a, b) => (...args) => a(b(...args)));
@@ -9,75 +9,9 @@ describe('Middleware: internals', () => {
         stubStore = {
             dispatch: () => {}
         };
-        createStoreForTest = require('#tests/middleware');
+        createStoreForMiddlewareTest = require('#tests/middleware').createStoreForMiddlewareTest;
     })
 
-
-    it('unsafe recursive call in middlewares', () => {
-        const middlewares = [
-            (store) => (next) => (action) => {
-                action.A_call_count = action.A_call_count + 1;
-                next(action);
-                if (action.val < 100) {
-                    action.val = action.val + 1
-                    dispatch(action);
-                } else {
-                    return
-                }
-            },
-            (store) => (next) => (action) => {
-                action.B_call_count = action.B_call_count + 1;
-                next(action);
-                if (action.val < 100) {
-                    action.val = action.val + 1
-                    dispatch(action);
-                } else {
-                    return
-                }
-            }
-        ];
-        const dispatch = compose(... middlewares.map((middleware) => middleware(stubStore)))(stubStore.dispatch);
-        const action = {
-            val: 0,
-            A_call_count: 0,
-            B_call_count: 0
-        };
-        dispatch(action);
-        expect(action).toEqual({ val: 100, A_call_count: 101, B_call_count: 101 });
-    })
-
-    it.skip('unsafe recursive call in middlewares', () => {
-        const middlewares = [
-            (store) => (next) => (action) => {
-                action.A_call_count = action.A_call_count + 1;
-                next(action);
-                if (action.val < 100) {
-                    action.val = action.val + 1
-                    store.dispatch(action);
-                } else {
-                    return
-                }
-            },
-            (store) => (next) => (action) => {
-                action.B_call_count = action.B_call_count + 1;
-                next(action);
-                if (action.val < 100) {
-                    action.val = action.val + 1
-                    store.dispatch(action);
-                } else {
-                    return
-                }
-            }
-        ];
-        const store = createStoreForTest(middlewares);
-        const action = {
-            val: 0,
-            A_call_count: 0,
-            B_call_count: 0
-        };
-        store.dispatch(action);
-        expect(action).toEqual({ val: 100, A_call_count: 101, B_call_count: 101 })
-    })
 
     it.skip('sync blocking scenario', async () => {
         const middlewares = [
@@ -98,14 +32,13 @@ describe('Middleware: internals', () => {
                 next(action);
             }
         ];
-        const store = createStoreForTest(middlewares);
+        const store = createStoreForMiddlewareTest(middlewares);
         const action = [];
         store.dispatch(action);
         await new Promise(res => setTimeout(res, 2000));
-        console.log(action);
     })
 
-    it.skip('async non-blocking scenario', async () => {
+    it('async non-blocking scenario', async () => {
         const middlewares = [
             (store) => (next) => (action) => {
                 next(action);
@@ -124,14 +57,15 @@ describe('Middleware: internals', () => {
                 action.push([3, new Date().toISOString()]);
             }
         ];
-        const store = createStoreForTest(middlewares);
+        const store = createStoreForMiddlewareTest(middlewares);
         const action = [];
         store.dispatch(action);
         await new Promise(res => setTimeout(res, 2000));
-        console.log(action);
+        const actual = action.map(x => x[0]);
+        expect(actual).toEqual([3, 2, 1, 4]);
     })
 
-    it.skip('test', () => {
+    it('test', () => {
         function A(next) {
             return function A1(action) {
                 action.push(1);
@@ -167,11 +101,11 @@ describe('Middleware: internals', () => {
         });
 
         A(B(C(store.dispatch)))(action);
-        console.log(action);
-        // console.log(action);
+        const actual = action;
+        expect(actual).toEqual([1, 2, 3]);
     });
 
-    it.skip('test', () => {
+    it.skip('stack', () => {
 
         const action = [];
         const store = {

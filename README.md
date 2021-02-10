@@ -1,7 +1,8 @@
 ## 개념 증명(Proof of Concept)을 위한, 샌드박스 미니 프로젝트 
 
 
-> 메인 프로젝트<sup>[1](#footnote_1)</sup>를 진행하며 발생한 기술적 문제를 해결하고 여러 가지 대안적 실험을 진행할 수 있는   
+> 메인 프로젝트<sup>[1](#footnote_1)</sup>를 진행하며 발생한 기술적 문제를 해결하고   
+> 테스트 주도 개발을 통해  여러 가지 대안적 실험을 진행할 수 있는   
 > <font color="red">샌드박스 미니 프로젝트</font>를 수행하고자 합니다.
 
 <br/>
@@ -23,9 +24,9 @@
 
 3. 메인 프로젝트에서 발생한 문제점과 해결 과정
 
-    다른 문서 가기 - [미들웨어를 어떻게 작성할 것인가](problem_01.md)  
+    다른 문서 가기 - [>>>>> 미들웨어를 어떻게 작성할 것인가](problem_01.md)  
 
-    다른 문서 가기 - [브라우저 캐싱과 원격 데이터베이스로 PWA를 어떻게 구현할 것인가](problem_02.md)
+    다른 문서 가기 - [>>>>> 브라우저 캐싱과 원격 데이터베이스로 PWA를 어떻게 구현할 것인가](problem_02.md)
 
 4. 프로젝트를 진행하며 새롭게 습득하게 된 기법들
 
@@ -223,14 +224,14 @@
     // 로그에 출력되는 형식 그대로 테스트 제목이 생성되도록 런타임시 logMiddleware에 logCreator 유틸을 주입하고 
     // 해당 유틸을 테스트 제목 생성시에도 활용하였습니다. 
 
-    // |PASS| src/js/store/middleware/app/app.middleware.test.js 
-    //
-    // Middleware: app
-    //     ✓ catches ActionEvent with [MOD] OUTPUT    |LOADED| (21 ms)
-    //      
-    // Test Suites: 1 passed, 1 total
-    // Tests:       1 passed, 1 total
-    // Snapshots:   0 total
+    |PASS| src/js/store/middleware/app/app.middleware.test.js 
+    
+     Middleware: app
+         ✓ catches ActionEvent with [MOD] OUTPUT    |LOADED| (21 ms)
+          
+     Test Suites: 1 passed, 1 total
+     Tests:       1 passed, 1 total
+     Snapshots:   0 total
 
     ```
 
